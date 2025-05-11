@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::apiResource('/news-category', NewsCategoryController::class::class);
+Route::apiResource('/news-category', NewsCategoryController::class);
 Route::apiResource('/news', NewsController::class);
 Route::apiResource('/service', ServiceController::class);
 

@@ -17,6 +17,64 @@ class AdminNewsController extends Controller
         $this->newsService = $newsService;
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/admin/news",
+     *     tags={"Admin"},
+     *     summary="Получить список всех новостей",
+     *     operationId="getAllNewsAdmin",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список новостей",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Список новостей", description="Сообщение о результате запроса"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 description="Массив новостей",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор новости"),
+     *                     @OA\Property(property="title", type="string", description="Заголовок новости"),
+     *                     @OA\Property(property="description", type="string", description="Описание новости"),
+     *                     @OA\Property(
+     *                         property="category",
+     *                         type="object",
+     *                         description="Категория новости",
+     *                         @OA\Property(property="id", type="string", description="Уникальный идентификатор категории"),
+     *                         @OA\Property(property="title", type="string", description="Название категории")
+     *                     ),
+     *                     @  @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Неавторизован",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Неавторизован", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
+     * )
+     */
     public function index()
     {
         $newsList = $this->newsService->getAllNews();
@@ -30,17 +88,61 @@ class AdminNewsController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/news",
-     *     tags={"News"},
-     *     summary="Создасть новость",
+     *     path="/api/admin/news",
+     *     tags={"Admin"},
+     *     summary="Создать новую новость",
+     *     operationId="createNewsAdmin",
+     *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
+     *         required=true,
      *         @OA\JsonContent(
-     *             required={"title", "description"},
-     *             @OA\Property(property="title", type="string"),
-     *             @OA\Property(property="description", type="string")
+     *             type="object",
+     *             required={"title", "description", "category_id"},
+     *             @OA\Property(property="title", type="string", description="Заголовок новости", example="Новая новость"),
+     *             @OA\Property(property="description", type="string", description="Описание новости", example="Описание новой новости"),
+     *             @OA\Property(property="category_id", type="string", description="Идентификатор категории новости", example="1")
      *         )
      *     ),
-     *     @OA\Response(response=201, description="CREATED")
+     *     @OA\Response(
+     *         response=201,
+     *         description="Новость создана",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"created"}, example="created", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Новость создана", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после создания)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Неавторизован",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Неавторизован", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Ошибка валидации", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="object", description="Детали ошибки валидации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
      * )
      */
     public function store(NewsRequest $request)
@@ -56,19 +158,78 @@ class AdminNewsController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/news",
-     *     tags={"News"},
-     *     summary="Обновить новость",
+     *     path="/api/admin/news/{id}",
+     *     tags={"Admin"},
+     *     summary="Обновить новость по идентификатору",
+     *     operationId="updateNewsAdmin",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Идентификатор новости",
+     *         @OA\Schema(type="string")
+     *     ),
      *     @OA\RequestBody(
+     *         required=false,
      *         @OA\JsonContent(
-     *             required={"title", "description"},
-     *             @OA\Property(property="title", type="string"),
-     *             @OA\Property(property="description", type="string")
+     *             type="object",
+     *             @OA\Property(property="title", type="string", description="Заголовок новости", example="Обновленная новость"),
+     *             @OA\Property(property="description", type="string", description="Описание новости", example="Обновленное описание новости"),
+     *             @OA\Property(property="category_id", type="string", description="Идентификатор категории новости", example="1")
      *         )
      *     ),
-     *     @OA\Response(response=200, description="UPDATED")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Новость обновлена",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"updated"}, example="updated", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Новость обновлена", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после обновления)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Неавторизован",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Неавторизован", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Новость не найдена",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Новость не найдена", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Ошибка валидации", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="object", description="Детали ошибки валидации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
      * )
-     *
      */
     public function update(NewsRequest $request, string $id)
     {
@@ -91,11 +252,58 @@ class AdminNewsController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/news/{id}",
-     *     tags={"News"},
-     *     summary="Удалить новость по id",
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
-     *     @OA\Response(response=204, description="Deleted")
+     *     path="/api/admin/news/{id}",
+     *     tags={"Admin"},
+     *     summary="Удалить новость по идентификатору",
+     *     operationId="deleteNewsAdmin",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Идентификатор новости",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Новость удалена",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"deleted"}, example="deleted", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Новость успешно удалена", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после удаления)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Неавторизован",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Неавторизован", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Новость не найдена",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Новость не найдена", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
      * )
      */
     public function destroy(string $id)

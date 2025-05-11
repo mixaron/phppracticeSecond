@@ -19,8 +19,41 @@ class ServiceController extends Controller
      * @OA\Get(
      *     path="/api/service",
      *     tags={"Service"},
-     *     summary="Список всех услуг",
-     *     @OA\Response(response=200, description="Лист услуг")
+     *     summary="Получить список всех услуг",
+     *     operationId="getAllServices",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список услуг",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Список услуг", description="Сообщение о результате запроса"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 description="Массив услуг",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор услуги"),
+     *                     @OA\Property(property="title", type="string", description="Название услуги"),
+     *                     @OA\Property(property="description", type="string", description="Описание услуги"),
+     *                     @OA\Property(property="price", type="number", format="float", description="Стоимость услуги"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
      * )
      */
     public function index()
@@ -38,14 +71,61 @@ class ServiceController extends Controller
      * @OA\Get(
      *     path="/api/service/{id}",
      *     tags={"Service"},
-     *     summary="Получить услугу по id",
-     *     @OA\Response(response=200, description="Услуга")
+     *     summary="Получить услугу по идентификатору",
+     *     operationId="getServiceById",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Идентификатор услуги",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Услуга",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Услуга по id", description="Сообщение о результате запроса"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Данные услуги",
+     *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор услуги"),
+     *                 @OA\Property(property="title", type="string", description="Название услуги"),
+     *                 @OA\Property(property="description", type="string", description="Описание услуги"),
+     *                 @OA\Property(property="price", type="number", format="float", description="Стоимость услуги"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Услуга не найдена",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Услуга не найдена", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
      * )
      */
     public function show(string $id)
     {
         try {
-            $news = $this->serviceService->getServiceById($id);
+            $service = $this->serviceService->getServiceById($id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
@@ -57,7 +137,7 @@ class ServiceController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Услуга по id',
-            'data' => new ServiceResource($news)
+            'data' => new ServiceResource($service)
         ]);
     }
 }
