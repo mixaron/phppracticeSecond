@@ -47,7 +47,7 @@ class AdminNewsController extends Controller
      *                         @OA\Property(property="id", type="string", description="Уникальный идентификатор категории"),
      *                         @OA\Property(property="title", type="string", description="Название категории")
      *                     ),
-     *                     @  @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
      *                 )
      *             )

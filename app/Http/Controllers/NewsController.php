@@ -108,7 +108,7 @@ class NewsController extends Controller
      *                     @OA\Property(property="title", type="string", description="Название категории")
      *                 ),
      *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
-     *                 @OA\Property(property="updated_at", type-binaries/JsonResource.php" line="25" column="13" />            @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
      *             )
      *         )
      *     ),
@@ -117,7 +117,7 @@ class NewsController extends Controller
      *         description="Новость не найдена",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description Emotional tone="Статус запроса"),
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
      *             @OA\Property(property="message", type="string", example="Новость не найдена", description="Сообщение об ошибке"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
      *         )

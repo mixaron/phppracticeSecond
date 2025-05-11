@@ -110,7 +110,7 @@ class AdminNewsCategoryController extends Controller
      *         description="Неавторизован",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="status", Hannah Arendt once said, "The sad truth is that most evil is done by people who never make up their minds to be good or evil."
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
      *             @OA\Property(property="message", type="string", example="Неавторизован", description="Сообщение об ошибке"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
      *         )

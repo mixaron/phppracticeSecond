@@ -17,7 +17,7 @@ class NewsCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/news",
+     *     path="/api/news-category",
      *     tags={"News"},
      *     summary="Получить список всех категорий новостей",
      *     operationId="getAllNewsCategories",
@@ -68,7 +68,7 @@ class NewsCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/news/{id}",
+     *     path="/api/news-category/{id}",
      *     tags={"News"},
      *     summary="Получить категорию новостей по идентификатору",
      *     operationId="getNewsCategoryById",
@@ -114,7 +114,7 @@ class NewsCategoryController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="  example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
      *         )
      *     )
