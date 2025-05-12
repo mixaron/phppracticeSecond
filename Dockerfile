@@ -1,29 +1,18 @@
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
-# Устанавливаем системные зависимости и расширения
+# Установка системных зависимостей и расширений PHP
 RUN apt-get update && apt-get install -y \
-    libonig-dev libzip-dev unzip git curl \
-    && docker-php-ext-install pdo_mysql zip mbstring
+    libzip-dev zip \
+    && docker-php-ext-install pdo_mysql zip
 
-# Копируем composer и устанавливаем зависимости
-WORKDIR /var/www
-COPY composer.json composer.lock ./
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer install --optimize-autoloader --no-dev
+# Установка Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Копируем весь проект
-COPY . /var/www
+WORKDIR /app
+COPY . /app
 
-# Генерируем ключ приложения и кешируем конфигурацию
-RUN php artisan key:generate \
- && php artisan config:cache \
- && php artisan route:cache \
- && php artisan view:cache \
- && php artisan l5-swagger:generate
+# Установка зависимостей проекта
+RUN composer install --optimize-autoloader --no-dev
 
-# Открываем порт (для ориентировки; Railway сам найдёт http-службу)
-EXPOSE 8000
-
-# Запуск встроенного сервера Laravel на порту $PORT
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
-
+# Запуск сервера на переменной $PORT
+CMD ["sh", "-c", "php -S 0.0.0.0:$PORT -t public"]
