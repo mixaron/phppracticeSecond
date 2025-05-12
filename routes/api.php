@@ -29,13 +29,12 @@ Route::middleware('auth:api')->prefix('user')->group(function () {
 
 Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminPageController::class, 'getInformation']);
-    Route::apiResource('/news-category', AdminNewsCategoryController::class);
-    Route::apiResource('/news', AdminNewsController::class);
-    Route::apiResource('/service', AdminServiceController::class);
+    Route::apiResource('/news-category', AdminNewsCategoryController::class)->names('admin.news-category');
+    Route::apiResource('/news', AdminNewsController::class)->names('admin.news');;
+    Route::apiResource('/service', AdminServiceController::class)->names('admin.service');;
     Route::get('/requests', [AdminUserRequestController::class, 'showRequests']);
     Route::patch('/requests/{id}/status', [AdminUserRequestController::class, 'changeStatus']);
 });
-
 
 // добавить изменение пароля, добаить swagger
 // создать сущность, создать миграцию, применить миграцию, создать репо, сервис, контроллер, создать дто
