@@ -25,4 +25,4 @@ RUN php artisan key:generate \
 EXPOSE 8000
 
 # Запуск встроенного сервера Laravel на порту $PORT
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=10000"]
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=$PORT"]
