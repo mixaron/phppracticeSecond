@@ -80,7 +80,7 @@ class AdminReviewController extends Controller
      *     )
      * )
      */
-    public function getAllReviews()
+    public function index()
     {
         $reviews = $this->reviewService->getAllReviews();
 

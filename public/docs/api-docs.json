@@ -9,16 +9,19 @@
         {
             "url": "http://localhost/api",
             "description": "Локальный сервер"
+        },
+        {
+            "url": "https://phppracticesecond-production.up.railway.app"
         }
     ],
     "paths": {
-        "/api/register": {
+        "/api/auth/register": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Зарегестрировать пользователя",
-                "operationId": "8a56853624e025573120a09a4c75d468",
+                "operationId": "d764dd091cc4494ae0baf360b03319f3",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -42,9 +45,6 @@
                                     "phone": {
                                         "type": "string"
                                     },
-                                    "role": {
-                                        "type": "string"
-                                    },
                                     "password": {
                                         "type": "string",
                                         "format": "password"
@@ -62,13 +62,13 @@
                 }
             }
         },
-        "/api/login": {
+        "/api/auth/login": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Аутентифицировать пользователя",
-                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -102,10 +102,10 @@
                 }
             }
         },
-        "/api/news-category": {
+        "/api/news-categories": {
             "get": {
                 "tags": [
-                    "News"
+                    "News-Categories"
                 ],
                 "summary": "Получить список всех категорий новостей",
                 "operationId": "getAllNewsCategories",
@@ -199,10 +199,10 @@
                 }
             }
         },
-        "/api/news-category/{id}": {
+        "/api/news-categories/{id}": {
             "get": {
                 "tags": [
-                    "News"
+                    "News-Categories"
                 ],
                 "summary": "Получить категорию новостей по идентификатору",
                 "operationId": "getNewsCategoryById",
@@ -339,11 +339,23 @@
                 "tags": [
                     "News"
                 ],
-                "summary": "Получить список всех новостей",
+                "summary": "Получить список всех новостей или по категории",
                 "operationId": "getAllNews",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "ID категории для фильтрации новостей",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Список новостей",
+                        "description": "Список новостей (возможно отфильтрованный по категории)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -359,6 +371,11 @@
                                         "message": {
                                             "description": "Сообщение о результате запроса",
                                             "type": "string",
+                                            "enum": [
+                                                "Список новостей",
+                                                "Список новостей по категории",
+                                                "Новостей по такой категории еще нет"
+                                            ],
                                             "example": "Список новостей"
                                         },
                                         "data": {
@@ -594,16 +611,16 @@
                 }
             }
         },
-        "/api/service": {
+        "/api/service-categories": {
             "get": {
                 "tags": [
-                    "Service"
+                    "Service-Categories"
                 ],
-                "summary": "Получить список всех услуг",
-                "operationId": "getAllServices",
+                "summary": "Получить список всех категорий услуг",
+                "operationId": "getAllServiceCategories",
                 "responses": {
                     "200": {
-                        "description": "Список услуг",
+                        "description": "Список категорий услуг",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -619,6 +636,255 @@
                                         "message": {
                                             "description": "Сообщение о результате запроса",
                                             "type": "string",
+                                            "example": "Список категорий новостей"
+                                        },
+                                        "data": {
+                                            "description": "Массив категорий услуг",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Уникальный идентификатор категории услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "description": "Название категории услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "description": "Описание категории услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата и время создания в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/service-categories/{id}": {
+            "get": {
+                "tags": [
+                    "Service-Categories"
+                ],
+                "summary": "Получить категорию услуг по идентификатору",
+                "operationId": "getServiceCategoryById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор категории услуг",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Категория услуг",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Категория новости по id"
+                                        },
+                                        "data": {
+                                            "description": "Данные категории услуг",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Уникальный идентификатор категории услуг",
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "description": "Название категории услуг",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "description": "Описание категории услуг",
+                                                    "type": "string"
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата и время создания в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория услуги не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Категория новости не найдена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/service": {
+            "get": {
+                "tags": [
+                    "Service"
+                ],
+                "summary": "Получить список всех услуг или по категории",
+                "operationId": "getAllServices",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "ID категории для фильтрации услуг",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список услуг (возможно отфильтрованный по категории)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "Список услуг",
+                                                "Список услуг по категории",
+                                                "Услуг по такой категории еще нет"
+                                            ],
                                             "example": "Список услуг"
                                         },
                                         "data": {
@@ -1276,7 +1542,198 @@
                 ]
             }
         },
-        "/api/request": {
+        "/api/user/passsword": {
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Изменить пароль пользователя",
+                "operationId": "changePassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "oldPassword",
+                                    "newPassword"
+                                ],
+                                "properties": {
+                                    "oldPassword": {
+                                        "description": "Текущий пароль пользователя",
+                                        "type": "string",
+                                        "example": "oldPass123"
+                                    },
+                                    "newPassword": {
+                                        "description": "Новый пароль пользователя",
+                                        "type": "string",
+                                        "example": "newPass123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Пароль успешно изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Пароль успешно поменян"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после изменения пароля)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Ошибка при изменении пароля",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неверный текущий пароль"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/requests": {
             "get": {
                 "tags": [
                     "Requests"
@@ -1477,32 +1934,21 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Заявка создана",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "description": "Статус запроса",
-                                            "type": "string",
-                                            "enum": [
-                                                "created"
-                                            ],
-                                            "example": "created"
-                                        },
-                                        "message": {
-                                            "description": "Сообщение о результате запроса",
-                                            "type": "string",
-                                            "example": "Заявка создана"
-                                        },
-                                        "data": {
-                                            "description": "Данные (отсутствуют после создания)",
-                                            "type": "null",
-                                            "example": null
-                                        }
-                                    },
-                                    "type": "object"
+                                    "type": "array",
+                                    "items": {
+                                        "description": "Статус запроса",
+                                        "type": "string",
+                                        "enum": [
+                                            "created",
+                                            "error"
+                                        ],
+                                        "example": "created"
+                                    }
                                 }
                             }
                         }
@@ -1512,27 +1958,33 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "description": "Статус запроса",
-                                            "type": "string",
-                                            "enum": [
-                                                "error"
-                                            ],
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "description": "Сообщение об ошибке",
-                                            "type": "string",
-                                            "example": "Неавторизован"
-                                        },
-                                        "data": {
-                                            "description": "Данные (отсутствуют при ошибке)",
-                                            "type": "null",
-                                            "example": null
-                                        }
-                                    },
-                                    "type": "object"
+                                    "type": "array",
+                                    "items": {
+                                        "description": "Статус запроса",
+                                        "type": "string",
+                                        "enum": [
+                                            "error"
+                                        ],
+                                        "example": "error"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Услуга не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "description": "Статус запроса",
+                                        "type": "string",
+                                        "enum": [
+                                            "error"
+                                        ],
+                                        "example": "error"
+                                    }
                                 }
                             }
                         }
@@ -1542,26 +1994,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "description": "Статус запроса",
-                                            "type": "string",
-                                            "enum": [
-                                                "error"
-                                            ],
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "description": "Сообщение об ошибке",
-                                            "type": "string",
-                                            "example": "Ошибка валидации"
-                                        },
-                                        "data": {
-                                            "description": "Детали ошибки валидации",
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "type": "array",
+                                    "items": {
+                                        "description": "Статус запроса",
+                                        "type": "string",
+                                        "enum": [
+                                            "error"
+                                        ],
+                                        "example": "error"
+                                    }
                                 }
                             }
                         }
@@ -1571,27 +2012,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "description": "Статус запроса",
-                                            "type": "string",
-                                            "enum": [
-                                                "error"
-                                            ],
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "description": "Сообщение об ошибке",
-                                            "type": "string",
-                                            "example": "Произошла непредвиденная ошибка"
-                                        },
-                                        "data": {
-                                            "description": "Данные (отсутствуют при ошибке)",
-                                            "type": "null",
-                                            "example": null
-                                        }
-                                    },
-                                    "type": "object"
+                                    "type": "array",
+                                    "items": {
+                                        "description": "Статус запроса",
+                                        "type": "string",
+                                        "enum": [
+                                            "error"
+                                        ],
+                                        "example": "error"
+                                    }
                                 }
                             }
                         }
@@ -1604,7 +2033,7 @@
                 ]
             }
         },
-        "/api/request/{id}": {
+        "/api/requests/{id}": {
             "get": {
                 "tags": [
                     "Requests"
@@ -2267,10 +2696,843 @@
                 ]
             }
         },
+        "/api/user/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Получить список всех отзывов или отзывы пользователя",
+                "operationId": "getAllReviews",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Фильтрация отзывов по ID пользователя (если true, возвращаются отзывы авторизованного пользователя)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список отзывов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Список отзывов"
+                                        },
+                                        "data": {
+                                            "description": "Массив отзывов",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Уникальный идентификатор отзыва",
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "description": "Текст отзыва",
+                                                        "type": "string"
+                                                    },
+                                                    "estimation": {
+                                                        "description": "Оценка (от 0 до 5)",
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "status": {
+                                                        "description": "Статус отзыва",
+                                                        "type": "string",
+                                                        "example": "on_moderation"
+                                                    },
+                                                    "request": {
+                                                        "description": "Информация о заявке",
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "ID заявки",
+                                                                "type": "string"
+                                                            },
+                                                            "user_id": {
+                                                                "description": "Название заявки",
+                                                                "type": "string"
+                                                            },
+                                                            "service_id": {
+                                                                "description": "Название услуги",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата и время создания в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Создать новый отзыв",
+                "operationId": "createReview",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "description",
+                                    "estimation",
+                                    "request_id"
+                                ],
+                                "properties": {
+                                    "description": {
+                                        "description": "Текст отзыва",
+                                        "type": "string",
+                                        "example": "Отличный сервис!"
+                                    },
+                                    "estimation": {
+                                        "description": "Оценка (от 0 до 5)",
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "request_id": {
+                                        "description": "Идентификатор связанной заявки",
+                                        "type": "string",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Отзыв создан и отправлен на модерацию",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "created"
+                                            ],
+                                            "example": "created"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Отзыв создан и отправлен на модерацию"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после создания)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Доступ запрещен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Доступ запрещен"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Заявка не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Заявка не найдена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user/reviews/{id}": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Получить отзыв по идентификатору",
+                "operationId": "getReviewById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор отзыва",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Отзыв",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Отзыв по id"
+                                        },
+                                        "data": {
+                                            "description": "Данные отзыва",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Уникальный идентификатор отзыва",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "description": "Текст отзыва",
+                                                    "type": "string"
+                                                },
+                                                "estimation": {
+                                                    "description": "Оценка (от 0 до 5)",
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "status": {
+                                                    "description": "Статус отзыва",
+                                                    "type": "string",
+                                                    "example": "on_moderation"
+                                                },
+                                                "request": {
+                                                    "description": "Информация о заявке",
+                                                    "properties": {
+                                                        "id": {
+                                                            "description": "ID заявки",
+                                                            "type": "string"
+                                                        },
+                                                        "user_id": {
+                                                            "description": "Название заявки",
+                                                            "type": "string"
+                                                        },
+                                                        "service_id": {
+                                                            "description": "Название услуги",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата и время создания в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Отзыв не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Отзыв не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Удалить отзыв по идентификатору",
+                "operationId": "deleteReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор отзыва",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Отзыв удален",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "deleted"
+                                            ],
+                                            "example": "deleted"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Отзыв удален"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после удаления)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Доступ запрещен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Доступ запрещен"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Отзыв не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Отзыв не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Обновить отзыв по идентификатору",
+                "operationId": "updateReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор отзыва",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "description": {
+                                        "description": "Текст отзыва",
+                                        "type": "string",
+                                        "example": "Обновленный отзыв"
+                                    },
+                                    "estimation": {
+                                        "description": "Оценка (от 0 до 5)",
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "request_id": {
+                                        "description": "Идентификатор связанной заявки",
+                                        "type": "string",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Отзыв обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "updated"
+                                            ],
+                                            "example": "updated"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Отзыв обновлен"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после обновления)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Доступ запрещен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Доступ запрещен"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Отзыв не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Отзыв не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/admin/news-categories": {
             "get": {
                 "tags": [
-                    "Admin"
+                    "Admin/News-Categories"
                 ],
                 "summary": "Получить список всех категорий новостей",
                 "operationId": "getAllNewsCategoriesAdmin",
@@ -2400,7 +3662,7 @@
             },
             "post": {
                 "tags": [
-                    "Admin"
+                    "Admin/News-Categories"
                 ],
                 "summary": "Создать новую категорию новостей",
                 "operationId": "createNewsCategoryAdmin",
@@ -2561,7 +3823,7 @@
         "/api/admin/news-categories/{id}": {
             "delete": {
                 "tags": [
-                    "Admin"
+                    "Admin/News-Categories"
                 ],
                 "summary": "Удалить категорию новостей по идентификатору",
                 "operationId": "deleteNewsCategoryAdmin",
@@ -2706,7 +3968,7 @@
             },
             "patch": {
                 "tags": [
-                    "Admin"
+                    "Admin/News-Categories"
                 ],
                 "summary": "Обновить категорию новостей по идентификатору",
                 "operationId": "updateNewsCategoryAdmin",
@@ -2904,7 +4166,7 @@
         "/api/admin/news": {
             "get": {
                 "tags": [
-                    "Admin"
+                    "Admin/News"
                 ],
                 "summary": "Получить список всех новостей",
                 "operationId": "getAllNewsAdmin",
@@ -3048,7 +4310,7 @@
             },
             "post": {
                 "tags": [
-                    "Admin"
+                    "Admin/News"
                 ],
                 "summary": "Создать новую новость",
                 "operationId": "createNewsAdmin",
@@ -3215,7 +4477,7 @@
         "/api/admin/news/{id}": {
             "delete": {
                 "tags": [
-                    "Admin"
+                    "Admin/News"
                 ],
                 "summary": "Удалить новость по идентификатору",
                 "operationId": "deleteNewsAdmin",
@@ -3360,7 +4622,7 @@
             },
             "patch": {
                 "tags": [
-                    "Admin"
+                    "Admin/News"
                 ],
                 "summary": "Обновить новость по идентификатору",
                 "operationId": "updateNewsAdmin",
@@ -3563,7 +4825,7 @@
         "/api/admin/information": {
             "get": {
                 "tags": [
-                    "Admin"
+                    "Admin/Page"
                 ],
                 "summary": "Получить статистику по пользователям, новостям и услугам",
                 "operationId": "getAdminInformation",
@@ -3585,7 +4847,7 @@
                                         "message": {
                                             "description": "Сообщение о результате запроса",
                                             "type": "string",
-                                            "example": "Кол-во пользователей, новостей и услуг"
+                                            "example": "Кол-во пользователей, новостей, услуг и пользователей"
                                         },
                                         "data": {
                                             "description": "Данные статистики",
@@ -3602,6 +4864,11 @@
                                                 },
                                                 "service_count": {
                                                     "description": "Количество услуг",
+                                                    "type": "integer",
+                                                    "example": 30
+                                                },
+                                                "ReviewsCount": {
+                                                    "description": "Количество отзывов",
                                                     "type": "integer",
                                                     "example": 30
                                                 }
@@ -3682,10 +4949,1344 @@
                 ]
             }
         },
-        "/api/admin/service": {
-            "post": {
+        "/api/admin/users/{id}/role": {
+            "patch": {
+                "tags": [
+                    "Admin/Page"
+                ],
+                "summary": "Изменить роль пользователя",
+                "operationId": "changeUserRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "role"
+                                ],
+                                "properties": {
+                                    "role": {
+                                        "description": "Новая роль пользователя",
+                                        "type": "string",
+                                        "enum": [
+                                            "user",
+                                            "admin"
+                                        ],
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Роль пользователя обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Роль пользователя обновлена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после обновления роли)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Пользователь не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reviews": {
+            "get": {
                 "tags": [
                     "Admin"
+                ],
+                "summary": "Получить список всех отзывов",
+                "operationId": "getAllAdminReviews",
+                "responses": {
+                    "200": {
+                        "description": "Список отзывов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Список отзывов"
+                                        },
+                                        "data": {
+                                            "description": "Массив отзывов",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Уникальный идентификатор отзыва",
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "description": "Текст отзыва",
+                                                        "type": "string"
+                                                    },
+                                                    "estimation": {
+                                                        "description": "Оценка (от 0 до 5)",
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "status": {
+                                                        "description": "Статус отзыва",
+                                                        "type": "string",
+                                                        "example": "on_moderation"
+                                                    },
+                                                    "request": {
+                                                        "description": "Информация о заявке",
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "ID заявки",
+                                                                "type": "string"
+                                                            },
+                                                            "user_id": {
+                                                                "description": "Название заявки",
+                                                                "type": "string"
+                                                            },
+                                                            "service_id": {
+                                                                "description": "Название услуги",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата и время создания в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reviews/{id}/status": {
+            "patch": {
+                "tags": [
+                    "Admin/Reviews"
+                ],
+                "summary": "Изменить статус отзыва",
+                "operationId": "changeReviewStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор отзыва",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "description": "Новый статус отзыва",
+                                        "type": "string",
+                                        "enum": [
+                                            "cancelled",
+                                            "rejected"
+                                        ],
+                                        "example": "cancelled"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Статус отзыва изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Статус отзыва изменен"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после изменения статуса)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Отзыв не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Отзыв не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/service-categories": {
+            "get": {
+                "tags": [
+                    "Admin/Service-Categories"
+                ],
+                "summary": "Получить список всех категорий услуг",
+                "operationId": "getAllServiceCategoriesAdmin",
+                "responses": {
+                    "200": {
+                        "description": "Список категорий услуг",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Список категорий услуг"
+                                        },
+                                        "data": {
+                                            "description": "Массив категорий услуг",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Уникальный идентификатор категории услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "description": "Название категории услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "description": "Описание категории услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата и время создания в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin/Service-Categories"
+                ],
+                "summary": "Создать новую категорию услуг",
+                "operationId": "createServicesCategoryAdmin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Название категории услуг",
+                                        "type": "string",
+                                        "example": "Спорт"
+                                    },
+                                    "description": {
+                                        "description": "Описание категории услуг",
+                                        "type": "string",
+                                        "example": "услуг о спортивных событиях"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Категория создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "created"
+                                            ],
+                                            "example": "created"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Категория для услуг создана"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после создания)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/service-categories/{id}": {
+            "delete": {
+                "tags": [
+                    "Admin/Service-Categories"
+                ],
+                "summary": "Удалить категорию услуг по идентификатору",
+                "operationId": "deleteServiceCategoryAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор категории услуг",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Категория удалена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "deleted"
+                                            ],
+                                            "example": "deleted"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Категория для услуг удалена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после удаления)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Категория для услуг не найдена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Admin/Service-Categories"
+                ],
+                "summary": "Обновить категорию услуг по идентификатору",
+                "operationId": "updateServiceCategoryAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор категории услуг",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Название категории услуг",
+                                        "type": "string",
+                                        "example": "Спорт"
+                                    },
+                                    "description": {
+                                        "description": "Описание категории услуг",
+                                        "type": "string",
+                                        "example": "Обновленное описание спортивных услуг"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Категория обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "updated"
+                                            ],
+                                            "example": "updated"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Категория для услуг обновлена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после обновления)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Категория для услуг не найдена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/services": {
+            "get": {
+                "tags": [
+                    "Admin/Services"
+                ],
+                "summary": "Получить список всех услуг",
+                "operationId": "getAllServiceAdmin",
+                "responses": {
+                    "200": {
+                        "description": "Список услуг",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Список услуг"
+                                        },
+                                        "data": {
+                                            "description": "Массив услуг",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Уникальный идентификатор услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "description": "Заголовок услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "description": "Описание услуг",
+                                                        "type": "string"
+                                                    },
+                                                    "category": {
+                                                        "description": "Категория услуг",
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "Уникальный идентификатор категории",
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "description": "Название категории",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата и время создания в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin/Services"
                 ],
                 "summary": "Создать новую услугу",
                 "operationId": "createServiceAdmin",
@@ -3850,10 +6451,10 @@
                 ]
             }
         },
-        "/api/admin/service/{id}": {
+        "/api/admin/services/{id}": {
             "delete": {
                 "tags": [
-                    "Admin"
+                    "Admin/Services"
                 ],
                 "summary": "Удалить услугу по идентификатору",
                 "operationId": "deleteServiceAdmin",
@@ -3998,7 +6599,7 @@
             },
             "patch": {
                 "tags": [
-                    "Admin"
+                    "Admin/Services"
                 ],
                 "summary": "Обновить услугу по идентификатору",
                 "operationId": "updateServiceAdmin",
@@ -4202,7 +6803,7 @@
         "/api/admin/requests": {
             "get": {
                 "tags": [
-                    "Admin"
+                    "Admin/Requests"
                 ],
                 "summary": "Получить список всех заявок пользователей",
                 "operationId": "getAllRequestsAdmin",
@@ -4366,7 +6967,7 @@
         "/api/admin/requests/{id}/status": {
             "patch": {
                 "tags": [
-                    "Admin"
+                    "Admin/Requests"
                 ],
                 "summary": "Обновить статус заявки по идентификатору",
                 "operationId": "changeRequestStatusAdmin",
@@ -4655,6 +7256,23 @@
                 },
                 "type": "object"
             },
+            "Review": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "desciprion": {
+                        "type": "string"
+                    },
+                    "estimation": {
+                        "type": "integer"
+                    },
+                    "request_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "Service": {
                 "properties": {
                     "id": {
@@ -4666,8 +7284,25 @@
                     "desciprion": {
                         "type": "string"
                     },
+                    "category_id": {
+                        "type": "integer"
+                    },
                     "price": {
                         "type": "decimal"
+                    }
+                },
+                "type": "object"
+            },
+            "ServiceCategory": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "desciprion": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -4715,6 +7350,14 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
         }
     },
     "tags": [
@@ -4723,8 +7366,16 @@
             "description": "Auth"
         },
         {
+            "name": "News-Categories",
+            "description": "News-Categories"
+        },
+        {
             "name": "News",
             "description": "News"
+        },
+        {
+            "name": "Service-Categories",
+            "description": "Service-Categories"
         },
         {
             "name": "Service",
@@ -4739,8 +7390,40 @@
             "description": "Requests"
         },
         {
+            "name": "Reviews",
+            "description": "Reviews"
+        },
+        {
+            "name": "Admin/News-Categories",
+            "description": "Admin/News-Categories"
+        },
+        {
+            "name": "Admin/News",
+            "description": "Admin/News"
+        },
+        {
+            "name": "Admin/Page",
+            "description": "Admin/Page"
+        },
+        {
             "name": "Admin",
             "description": "Admin"
+        },
+        {
+            "name": "Admin/Reviews",
+            "description": "Admin/Reviews"
+        },
+        {
+            "name": "Admin/Service-Categories",
+            "description": "Admin/Service-Categories"
+        },
+        {
+            "name": "Admin/Services",
+            "description": "Admin/Services"
+        },
+        {
+            "name": "Admin/Requests",
+            "description": "Admin/Requests"
         }
     ]
 }
