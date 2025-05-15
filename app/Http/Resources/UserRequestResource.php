@@ -14,10 +14,6 @@ class UserRequestResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'status' => $this->status,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-            ],
             'service' => [
                 'id' => $this->service->id,
                 'title' => $this->service->title,

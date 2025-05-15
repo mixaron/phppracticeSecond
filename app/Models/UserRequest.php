@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class UserRequest extends Model
     /**
@@ -39,5 +40,10 @@ class UserRequest extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class, 'request_id');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Service;
 use App\Models\User;
 use App\Models\UserRequest;
 use App\Repositories\UserRequestRepository;
@@ -24,6 +25,7 @@ class UserRequestService
 
     public function addRequest(array $data): void
     {
+        Service::findOrFail($data['service_id']);
         $this->userRequestRepository->addRequest($data);
     }
 

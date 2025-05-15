@@ -24,7 +24,7 @@ class UserRequest extends FormRequest
         return [
             'title' => "required|string|max:255",
             'description' => "required|string",
-            'service_id' => "required|string"
+            'service_id' => "required|exists:services,id"
         ];
     }
 }
