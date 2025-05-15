@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EditUserRequest;
 use App\Http\Resources\EditUserResource;
 use App\Services\UserService;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class UserController extends Controller
 {
@@ -205,5 +207,98 @@ class UserController extends Controller
             'message' => 'Пользователь удален',
             'data' => null
         ]);
+    }
+
+    /**
+     * @OA\Patch(
+     *     path="/api/user/change-password",
+     *     tags={"User"},
+     *     summary="Изменить пароль пользователя",
+     *     operationId="changePassword",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"oldPassword", "newPassword"},
+     *             @OA\Property(property="oldPassword", type="string", description="Текущий пароль пользователя", example="oldPass123"),
+     *             @OA\Property(property="newPassword", type="string", description="Новый пароль пользователя", example="newPass123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Пароль успешно изменен",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Пароль успешно поменян", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после изменения пароля)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Ошибка при изменении пароля",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Неверный текущий пароль", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Неавторизован",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Неавторизован", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Ошибка валидации", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="object", description="Детали ошибки валидации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
+     * )
+     */
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'oldPassword' => 'required|string|min:8',
+            'newPassword' => 'required|string|min:8'
+        ]);
+
+        $status = "success";
+        $message = "Пароль успешно поменян";
+        $code = 200;
+
+        try {
+            $this->userService->changePassword($request->only('oldPassword', 'newPassword'));
+        } catch (BadRequestException $e) {
+            $status = 'error';
+            $message = $e->getMessage();
+            $code = 403;
+        }
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => null
+        ], $code);
     }
 }

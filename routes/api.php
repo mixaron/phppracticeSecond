@@ -9,6 +9,7 @@ use App\Http\Controllers\admin\AdminUserRequestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewsCategoryController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\UserReviewController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
@@ -26,11 +27,17 @@ Route::middleware('auth:api')->prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
     Route::patch('/', [UserController::class, 'update']);
     Route::delete('/', [UserController::class, 'destroy']);
+    Route::patch('/change-password', [UserController::class, 'changePassword']);
     Route::apiResource('/request', UserRequestController::class);
+    Route::apiResource('/reviews', UserReviewController::class);
 });
 
 Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminPageController::class, 'getInformation']);
+    Route::get('/users', [AdminPageController::class, 'getAllUsers']);
+    Route::delete('/users/{id}', [AdminPageController::class, 'deleteUser']);
+    Route::patch('/users/{id}/role', [AdminPageController::class, 'changeUserRole']);
+
 
     Route::apiResource('/news-category', AdminNewsCategoryController::class)
         ->names('admin.news-category');
@@ -51,4 +58,4 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 // todo создать акции, фотки, сделать админку, добавить изменение пароля
 // todo решить проблему с заявкой и несуществующей услугой
 // todo ДОКУМЕНТАЦИЯ таблица компании, отзывы,
-// todo  на странице админки кол-во пользователй, отзывов, услуг, новостей
+// доделать админку для отзывов

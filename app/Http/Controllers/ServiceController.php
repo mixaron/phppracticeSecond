@@ -35,7 +35,13 @@ class ServiceController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Список услуг по категории", description="Сообщение о результате запроса"),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Сообщение о результате запроса",
+     *                 enum={"Список услуг", "Список услуг по категории", "Услуг по такой категории еще нет"},
+     *                 example="Список услуг"
+     *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
@@ -68,7 +74,11 @@ class ServiceController extends Controller
     {
         if ($request->has('category_id') && is_numeric($request->query('category_id'))) {
             $allServices = $this->serviceService->getAllServicesByCategoryId($request->query('category_id'));
-            $message = 'Список услуг по категории';
+            if ($allServices->isEmpty()) {
+                $message = 'Услуг по такой категории еще нет';
+            } else {
+                $message = 'Список услуг по категории';
+            }
         } else {
             $allServices = $this->serviceService->getAllServices();
             $message = 'Список услуг';

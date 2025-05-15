@@ -113,62 +113,145 @@ class UserRequestController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=201,
+     *         response=200,
      *         description="Заявка создана",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", enum={"created"}, example="created", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Заявка создана", description="Сообщение о результате запроса"),
-     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после создания)")
+     *             type="array",
+     *             @OA\Items(
+     *                 type="string",
+     *                 enum={"created", "error"},
+     *                 example="created",
+     *                 description="Статус запроса"
+     *             ),
+     *             @OA\Items(
+     *                 type="string",
+     *                 example="Заявка создана",
+     *                 description="Сообщение о результате запроса"
+     *             ),
+     *             @OA\Items(
+     *                 type="object",
+     *                 example=null,
+     *                 description="Данные (отсутствуют после создания)"
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=401,
      *         description="Неавторизован",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Неавторизован", description="Сообщение об ошибке"),
-     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *             type="array",
+     *             @OA\Items(
+     *                 type="string",
+     *                 enum={"error"},
+     *                 example="error",
+     *                 description="Статус запроса"
+     *             ),
+     *             @OA\Items(
+     *                 type="string",
+     *                 example="Неавторизован",
+     *                 description="Сообщение об ошибке"
+     *             ),
+     *             @OA\Items(
+     *                 type="object",
+     *                 example=null,
+     *                 description="Данные (отсутствуют при ошибке)"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Услуга не найдена",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="string",
+     *                 enum={"error"},
+     *                 example="error",
+     *                 description="Статус запроса"
+     *             ),
+     *             @OA\Items(
+     *                 type="string",
+     *                 example="Услуги не существует",
+     *                 description="Сообщение об ошибке"
+     *             ),
+     *             @OA\Items(
+     *                 type="object",
+     *                 example=null,
+     *                 description="Данные (отсутствуют при ошибке)"
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
      *         description="Ошибка валидации",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Ошибка валидации", description="Сообщение об ошибке"),
-     *             @OA\Property(property="data", type="object", description="Детали ошибки валидации")
+     *             type="array",
+     *             @OA\Items(
+     *                 type="string",
+     *                 enum={"error"},
+     *                 example="error",
+     *                 description="Статус запроса"
+     *             ),
+     *             @OA\Items(
+     *                 type="string",
+     *                 example="Ошибка валидации",
+     *                 description="Сообщение об ошибке"
+     *             ),
+     *             @OA\Items(
+     *                 type="object",
+     *                 description="Детали ошибки валидации"
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Внутренняя ошибка сервера",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
-     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *             type="array",
+     *             @OA\Items(
+     *                 type="string",
+     *                 enum={"error"},
+     *                 example="error",
+     *                 description="Статус запроса"
+     *             ),
+     *             @OA\Items(
+     *                 type="string",
+     *                 example="Произошла непредвиденная ошибка",
+     *                 description="Сообщение об ошибке"
+     *             ),
+     *             @OA\Items(
+     *                 type="object",
+     *                 example=null,
+     *                 description="Данные (отсутствуют при ошибке)"
+     *             )
      *         )
      *     )
      * )
      */
     public function store(UserRequest $request)
     {
-        $this->userRequestService->addRequest([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'service_id' => $request->input('service_id'),
-            'status' => 'new',
-            'user_id' => auth()->id()
-        ]);
+        $status = 'created';
+        $message = 'Заявка создана';
+        $code = 200;
+        try {
+            $this->userRequestService->addRequest([
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'service_id' => $request->input('service_id'),
+                'status' => 'new',
+                'user_id' => auth()->id()
+            ]);
+        } catch (ModelNotFoundException $e) {
+            $status = 'error';
+            $message = 'Услуги не существует';
+            $code = 404;
+        }
 
         return response()->json([
-            'status' => 'created',
-            'message' => 'Заявка создана',
+            $status,
+            $message,
             'data' => null
-        ]);
+        ], $code);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\NewsResource;
 use App\Services\NewsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
@@ -25,16 +26,22 @@ class NewsController extends Controller
      *         name="category_id",
      *         in="query",
      *         required=false,
-     *         description="ID категории, по которой нужно фильтровать новости",
+     *         description="ID категории для фильтрации новостей",
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Список новостей",
+     *         description="Список новостей (возможно отфильтрованный по категории)",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Список новостей", description="Сообщение о результате запроса"),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Сообщение о результате запроса",
+     *                 enum={"Список новостей", "Список новостей по категории", "Новостей по такой категории еще нет"},
+     *                 example="Список новостей"
+     *             ),
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
@@ -68,20 +75,25 @@ class NewsController extends Controller
      *         )
      *     )
      * )
+     */
     public function index(Request $request)
     {
         if ($request->has('category_id') && is_numeric($request->input('category_id'))) {
-            $allServices = $this->newsService->getAllNewsByCategoryId($request->input('category_id'));
-            $message = 'Список новостей по категории';
+            $allNews = $this->newsService->getAllNewsByCategoryId($request->input('category_id'));
+            if ($allNews->isEmpty()) {
+                $message = 'Новостей по такой категории еще нет';
+            } else {
+                $message = 'Список новостей по категории';
+        }
         } else {
-            $allServices = $this->newsService->getAllNews();
+            $allNews = $this->newsService->getAllNews();
             $message = 'Список новостей';
         }
 
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'data' => NewsResource::collection($allServices)
+            'data' => NewsResource::collection($allNews)
         ]);
     }
 
