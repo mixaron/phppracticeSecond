@@ -19,7 +19,7 @@ class AdminUserRequestController extends Controller
     /**
      * @OA\Get(
      *     path="/api/admin/requests",
-     *     tags={"Admin"},
+     *     tags={"Admin/Requests"},
      *     summary="Получить список всех заявок пользователей",
      *     operationId="getAllRequestsAdmin",
      *     security={{"bearerAuth":{}}},
@@ -96,7 +96,7 @@ class AdminUserRequestController extends Controller
     /**
      * @OA\Patch(
      *     path="/api/admin/requests/{id}/status",
-     *     tags={"Admin"},
+     *     tags={"Admin/Requests"},
      *     summary="Обновить статус заявки по идентификатору",
      *     operationId="changeRequestStatusAdmin",
      *     security={{"bearerAuth":{}}},

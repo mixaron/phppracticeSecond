@@ -17,8 +17,8 @@ class ServiceCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/service-category",
-     *     tags={"Service"},
+     *     path="/api/service-categories",
+     *     tags={"Service-Categories"},
      *     summary="Получить список всех категорий услуг",
      *     operationId="getAllServiceCategories",
      *     @OA\Response(
@@ -68,8 +68,8 @@ class ServiceCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/service-category/{id}",
-     *     tags={"Service"},
+     *     path="/api/service-categories/{id}",
+     *     tags={"Service-Categories"},
      *     summary="Получить категорию услуг по идентификатору",
      *     operationId="getServiceCategoryById",
      *     @OA\Parameter(

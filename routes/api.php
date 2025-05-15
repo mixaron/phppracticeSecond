@@ -16,38 +16,38 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRequestController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::apiResource('/news-category', NewsCategoryController::class);
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::apiResource('/news-categories', NewsCategoryController::class);
 Route::apiResource('/news', NewsController::class);
-Route::apiResource('/services-category', ServiceCategoryController::class);
+Route::apiResource('/services-categories', ServiceCategoryController::class);
 Route::apiResource('/services', ServiceController::class);
 
 Route::middleware('auth:api')->prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
     Route::patch('/', [UserController::class, 'update']);
     Route::delete('/', [UserController::class, 'destroy']);
-    Route::patch('/change-password', [UserController::class, 'changePassword']);
-    Route::apiResource('/request', UserRequestController::class);
+    Route::patch('/password', [UserController::class, 'changePassword']);
+    Route::apiResource('/requests', UserRequestController::class);
     Route::apiResource('/reviews', UserReviewController::class);
 });
 
 Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminPageController::class, 'getInformation']);
+
     Route::get('/users', [AdminPageController::class, 'getAllUsers']);
     Route::delete('/users/{id}', [AdminPageController::class, 'deleteUser']);
     Route::patch('/users/{id}/role', [AdminPageController::class, 'changeUserRole']);
 
 
-    Route::apiResource('/news-category', AdminNewsCategoryController::class)
-        ->names('admin.news-category');
-
+    Route::apiResource('/news-categories', AdminNewsCategoryController::class)
+        ->names('admin.news-categories');
     Route::apiResource('/news', AdminNewsController::class)->names('admin.news');
 
-    Route::apiResource('/services-category', AdminServiceCategoryController::class)
-        ->names('admin.service-category');
-
+    Route::apiResource('/service-categories', AdminServiceCategoryController::class)
+        ->names('admin.service-categories');
     Route::apiResource('/services', AdminServiceController::class)->names('admin.service');
+
     Route::get('/requests', [AdminUserRequestController::class, 'showRequests']);
     Route::patch('/requests/{id}/status', [AdminUserRequestController::class, 'changeStatus']);
 });

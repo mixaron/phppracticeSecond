@@ -17,8 +17,8 @@ class NewsCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/news-category",
-     *     tags={"News"},
+     *     path="/api/news-categories",
+     *     tags={"News-Categories"},
      *     summary="Получить список всех категорий новостей",
      *     operationId="getAllNewsCategories",
      *     @OA\Response(
@@ -68,8 +68,8 @@ class NewsCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/news-category/{id}",
-     *     tags={"News"},
+     *     path="/api/news-categories/{id}",
+     *     tags={"News-Categories"},
      *     summary="Получить категорию новостей по идентификатору",
      *     operationId="getNewsCategoryById",
      *     @OA\Parameter(

@@ -36,7 +36,7 @@ class AdminPageController extends Controller
     /**
      * @OA\Get(
      *     path="/api/admin/information",
-     *     tags={"Admin"},
+     *     tags={"Admin/Page"},
      *     summary="Получить статистику по пользователям, новостям и услугам",
      *     operationId="getAdminInformation",
      *     security={{"bearerAuth":{}}},
@@ -53,7 +53,7 @@ class AdminPageController extends Controller
      *                 description="Данные статистики",
      *                 @OA\Property(property="user_count", type="integer", description="Количество пользователей", example=100),
      *                 @OA\Property(property="news_count", type="integer", description="Количество новостей", example=50),
-     *                 @OA\Property(property="service_count", type="integer", description="Количество услуг", example=30)
+     *                 @OA\Property(property="service_count", type="integer", description="Количество услуг", example=30),
      *                 @OA\Property(property="ReviewsCount", type="integer", description="Количество отзывов", example=30)
      *             )
      *         )
@@ -121,7 +121,7 @@ class AdminPageController extends Controller
     /**
      * @OA\Patch(
      *     path="/api/admin/users/{id}/role",
-     *     tags={"Admin"},
+     *     tags={"Admin/Page"},
      *     summary="Изменить роль пользователя",
      *     operationId="changeUserRole",
      *     security={{"bearerAuth":{}}},

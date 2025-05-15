@@ -20,7 +20,7 @@ class AdminServiceCategoryController extends Controller
     /**
      * @OA\Get(
      *     path="/api/admin/service-categories",
-     *     tags={"Admin"},
+     *     tags={"Admin/Service-Categories"},
      *     summary="Получить список всех категорий услуг",
      *     operationId="getAllServiceCategoriesAdmin",
      *     security={{"bearerAuth":{}}},
@@ -82,7 +82,7 @@ class AdminServiceCategoryController extends Controller
     /**
      * @OA\Post(
      *     path="/api/admin/service-categories",
-     *     tags={"Admin"},
+     *     tags={"Admin/Service-Categories"},
      *     summary="Создать новую категорию услуг",
      *     operationId="createServicesCategoryAdmin",
      *     security={{"bearerAuth":{}}},
@@ -151,7 +151,7 @@ class AdminServiceCategoryController extends Controller
     /**
      * @OA\Patch(
      *     path="/api/admin/service-categories/{id}",
-     *     tags={"Admin"},
+     *     tags={"Admin/Service-Categories"},
      *     summary="Обновить категорию услуг по идентификатору",
      *     operationId="updateServiceCategoryAdmin",
      *     security={{"bearerAuth":{}}},
@@ -244,7 +244,7 @@ class AdminServiceCategoryController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/admin/service-categories/{id}",
-     *     tags={"Admin"},
+     *     tags={"Admin/Service-Categories"},
      *     summary="Удалить категорию услуг по идентификатору",
      *     operationId="deleteServiceCategoryAdmin",
      *     security={{"bearerAuth":{}}},

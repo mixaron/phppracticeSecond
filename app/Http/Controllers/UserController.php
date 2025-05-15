@@ -211,7 +211,7 @@ class UserController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/user/change-password",
+     *     path="/api/user/passsword",
      *     tags={"User"},
      *     summary="Изменить пароль пользователя",
      *     operationId="changePassword",

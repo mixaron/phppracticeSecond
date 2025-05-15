@@ -20,7 +20,7 @@ class AdminNewsCategoryController extends Controller
     /**
      * @OA\Get(
      *     path="/api/admin/news-categories",
-     *     tags={"Admin"},
+     *     tags={"Admin/News-Categories"},
      *     summary="Получить список всех категорий новостей",
      *     operationId="getAllNewsCategoriesAdmin",
      *     security={{"bearerAuth":{}}},
@@ -82,7 +82,7 @@ class AdminNewsCategoryController extends Controller
     /**
      * @OA\Post(
      *     path="/api/admin/news-categories",
-     *     tags={"Admin"},
+     *     tags={"Admin/News-Categories"},
      *     summary="Создать новую категорию новостей",
      *     operationId="createNewsCategoryAdmin",
      *     security={{"bearerAuth":{}}},
@@ -151,7 +151,7 @@ class AdminNewsCategoryController extends Controller
     /**
      * @OA\Patch(
      *     path="/api/admin/news-categories/{id}",
-     *     tags={"Admin"},
+     *     tags={"Admin/News-Categories"},
      *     summary="Обновить категорию новостей по идентификатору",
      *     operationId="updateNewsCategoryAdmin",
      *     security={{"bearerAuth":{}}},
@@ -244,7 +244,7 @@ class AdminNewsCategoryController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/admin/news-categories/{id}",
-     *     tags={"Admin"},
+     *     tags={"Admin/News-Categories"},
      *     summary="Удалить категорию новостей по идентификатору",
      *     operationId="deleteNewsCategoryAdmin",
      *     security={{"bearerAuth":{}}},

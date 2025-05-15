@@ -18,8 +18,8 @@ class AdminServiceController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/api/admin/service",
-     *     tags={"Admin"},
+     *     path="/api/admin/services",
+     *     tags={"Admin/Services"},
      *     summary="Получить список всех услуг",
      *     operationId="getAllServiceAdmin",
      *     security={{"bearerAuth":{}}},
@@ -87,8 +87,8 @@ class AdminServiceController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/admin/service",
-     *     tags={"Admin"},
+     *     path="/api/admin/services",
+     *     tags={"Admin/Services"},
      *     summary="Создать новую услугу",
      *     operationId="createServiceAdmin",
      *     security={{"bearerAuth":{}}},
@@ -157,8 +157,8 @@ class AdminServiceController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/service/{id}",
-     *     tags={"Admin"},
+     *     path="/api/admin/services/{id}",
+     *     tags={"Admin/Services"},
      *     summary="Обновить услугу по идентификатору",
      *     operationId="updateServiceAdmin",
      *     security={{"bearerAuth":{}}},
@@ -251,8 +251,8 @@ class AdminServiceController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/admin/service/{id}",
-     *     tags={"Admin"},
+     *     path="/api/admin/services/{id}",
+     *     tags={"Admin/Services"},
      *     summary="Удалить услугу по идентификатору",
      *     operationId="deleteServiceAdmin",
      *     security={{"bearerAuth":{}}},

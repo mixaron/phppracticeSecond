@@ -19,7 +19,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/request",
+     *     path="/api/requests",
      *     tags={"Requests"},
      *     summary="Получить список всех заявок пользователя",
      *     operationId="getAllUserRequests",
@@ -97,7 +97,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/request",
+     *     path="/api/requests",
      *     tags={"Requests"},
      *     summary="Создать новую заявку",
      *     operationId="createUserRequest",
@@ -256,7 +256,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/request/{id}",
+     *     path="/api/requests/{id}",
      *     tags={"Requests"},
      *     summary="Получить заявку пользователя по идентификатору",
      *     operationId="getUserRequestById",
@@ -357,7 +357,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/request/{id}",
+     *     path="/api/requests/{id}",
      *     tags={"Requests"},
      *     summary="Обновить заявку пользователя по идентификатору",
      *     operationId="updateUserRequest",
@@ -494,7 +494,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/request/{id}",
+     *     path="/api/requests/{id}",
      *     tags={"Requests"},
      *     summary="Удалить заявку пользователя по идентификатору",
      *     operationId="deleteUserRequest",
