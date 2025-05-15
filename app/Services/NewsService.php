@@ -48,4 +48,9 @@ class NewsService
     {
         return $this->newsRepository->count();
     }
+
+    public function getAllNewsByCategoryId(mixed $input): Collection
+    {
+        return News::where('category_id', $input)->get();
+    }
 }

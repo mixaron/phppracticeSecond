@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\NewsResource;
 use App\Services\NewsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
@@ -19,8 +20,15 @@ class NewsController extends Controller
      * @OA\Get(
      *     path="/api/news",
      *     tags={"News"},
-     *     summary="Получить список всех новостей",
+     *     summary="Получить список всех новостей или по категории",
      *     operationId="getAllNews",
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="query",
+     *         required=false,
+     *         description="ID категории, по которой нужно фильтровать новости",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Список новостей",
@@ -61,15 +69,20 @@ class NewsController extends Controller
      *         )
      *     )
      * )
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $newsList = $this->newsService->getAllNews();
+        if ($request->has('category_id') && is_numeric($request->input('category_id'))) {
+            $allServices = $this->newsService->getAllNewsByCategoryId($request->input('category_id'));
+            $message = 'Список новостей по категории';
+        } else {
+            $allServices = $this->newsService->getAllNews();
+            $message = 'Список новостей';
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Список новостей',
-            'data' => NewsResource::collection($newsList)
+            'message' => $message,
+            'data' => NewsResource::collection($allServices)
         ]);
     }
 
