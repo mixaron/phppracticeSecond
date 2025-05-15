@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\NewsResource;
 use App\Services\NewsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {

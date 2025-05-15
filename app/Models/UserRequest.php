@@ -13,8 +13,8 @@ class UserRequest extends Model
      *     @OA\Property(property="title", type="string"),
      *     @OA\Property(property="desciprion", type="string"),
      *     @OA\Property(property="status", type="enum"),
-     *     @OA\Property(property="user_id", type="int"),
-     *     @OA\Property(property="service_id", type="int")
+     *     @OA\Property(property="user_id", type="integer"),
+     *     @OA\Property(property="service_id", type="integer")
      *
      * )
      */

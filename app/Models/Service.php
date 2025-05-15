@@ -12,6 +12,7 @@ class Service extends Model
      *     @OA\Property(property="id", type="integer"),
      *     @OA\Property(property="title", type="string"),
      *     @OA\Property(property="desciprion", type="string"),
+     *     @OA\Property(property="category_id", type="integer")
      *     @OA\Property(property="price", type="decimal")
      *
      * )

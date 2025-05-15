@@ -7,6 +7,7 @@ use App\Http\Requests\NewsRequest;
 use App\Http\Resources\NewsResource;
 use App\Services\NewsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class AdminNewsController extends Controller
 {
@@ -75,14 +76,20 @@ class AdminNewsController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $newsList = $this->newsService->getAllNews();
+        if ($request->has('category_id') && is_numeric($request->query('category_id'))) {
+            $allServices = $this->newsService->getAllNewsByCategoryId($request->query('category_id'));
+            $message = 'Список новостей по категории';
+        } else {
+            $allServices = $this->newsService->getAllNews();
+            $message = 'Список новостей';
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Список новостей',
-            'data' => NewsResource::collection($newsList)
+            'message' => $message,
+            'data' => NewsResource::collection($allServices)
         ]);
     }
 
