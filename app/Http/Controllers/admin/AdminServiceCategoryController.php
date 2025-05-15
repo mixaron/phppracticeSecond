@@ -3,49 +3,43 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ServiceRequest;
-use App\Http\Resources\ServiceResource;
-use App\Services\ServiceService;
+use App\Http\Requests\ServiceCategoryRequest;
+use App\Http\Resources\ServiceCategoryResource;
+use App\Services\ServiceCategoryService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class AdminServiceController extends Controller
+class AdminServiceCategoryController extends Controller
 {
-    private ServiceService $serviceService;
+    private ServiceCategoryService $serviceCategoryService;
 
-    public function __construct(ServiceService $serviceService)
+    public function __construct(ServiceCategoryService $serviceCategoryService)
     {
-        $this->serviceService = $serviceService;
+        $this->serviceCategoryService = $serviceCategoryService;
     }
+
     /**
      * @OA\Get(
-     *     path="/api/admin/service",
+     *     path="/api/admin/service-categories",
      *     tags={"Admin"},
-     *     summary="Получить список всех услуг",
-     *     operationId="getAllServiceAdmin",
+     *     summary="Получить список всех категорий услуг",
+     *     operationId="getAllServiceCategoriesAdmin",
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
-     *         description="Список услуг",
+     *         description="Список категорий услуг",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Список услуг", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="message", type="string", example="Список категорий услуг", description="Сообщение о результате запроса"),
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 description="Массив услуг",
+     *                 description="Массив категорий услуг",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор услуг"),
-     *                     @OA\Property(property="title", type="string", description="Заголовок услуг"),
-     *                     @OA\Property(property="description", type="string", description="Описание услуг"),
-     *                     @OA\Property(
-     *                         property="category",
-     *                         type="object",
-     *                         description="Категория услуг",
-     *                         @OA\Property(property="id", type="string", description="Уникальный идентификатор категории"),
-     *                         @OA\Property(property="title", type="string", description="Название категории")
-     *                     ),
+     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор категории услуг"),
+     *                     @OA\Property(property="title", type="string", description="Название категории услуг"),
+     *                     @OA\Property(property="description", type="string", description="Описание категории услуг"),
      *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
      *                 )
@@ -76,39 +70,38 @@ class AdminServiceController extends Controller
      */
     public function index()
     {
-        $serviceList = $this->serviceService->getAllServices();
+        $serviceList = $this->serviceCategoryService->getAllServiceCategory();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Список услуг',
-            'data' => ServiceResource::collection($serviceList)
+            'message' => 'Список категорий услуг',
+            'data' => ServiceCategoryResource::collection($serviceList)
         ]);
     }
 
     /**
      * @OA\Post(
-     *     path="/api/admin/service",
+     *     path="/api/admin/service-categories",
      *     tags={"Admin"},
-     *     summary="Создать новую услугу",
-     *     operationId="createServiceAdmin",
+     *     summary="Создать новую категорию услуг",
+     *     operationId="createServicesCategoryAdmin",
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"title", "description", "price"},
-     *             @OA\Property(property="title", type="string", description="Название услуги", example="Консультация"),
-     *             @OA\Property(property="description", type="string", description="Описание услуги", example="Профессиональная консультация по услугам"),
-     *             @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=99.99)
+     *             required={"title", "description"},
+     *             @OA\Property(property="title", type="string", description="Название категории услуг", example="Спорт"),
+     *             @OA\Property(property="description", type="string", description="Описание категории услуг", example="услуг о спортивных событиях")
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Услуга создана",
+     *         description="Категория создана",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"created"}, example="created", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Услуга создана", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="message", type="string", example="Категория для услуг создана", description="Сообщение о результате запроса"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после создания)")
      *         )
      *     ),
@@ -144,47 +137,46 @@ class AdminServiceController extends Controller
      *     )
      * )
      */
-    public function store(ServiceRequest $request)
+    public function store(ServiceCategoryRequest $request)
     {
-        $this->serviceService->addService($request->only(['title', 'description', 'price', 'category_id']));
+        $this->serviceCategoryService->addServiceCategory($request->only(['title', 'description']));
 
         return response()->json([
             'status' => 'created',
-            'message' => 'Услуга создана',
+            'message' => 'Категория для услуг создана',
             'data' => null
         ]);
     }
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/service/{id}",
+     *     path="/api/admin/service-categories/{id}",
      *     tags={"Admin"},
-     *     summary="Обновить услугу по идентификатору",
-     *     operationId="updateServiceAdmin",
+     *     summary="Обновить категорию услуг по идентификатору",
+     *     operationId="updateServiceCategoryAdmin",
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Идентификатор услуги",
+     *         description="Идентификатор категории услуг",
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\RequestBody(
      *         required=false,
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="title", type="string", description="Название услуги", example="Обновленная консультация"),
-     *             @OA\Property(property="description", type="string", description="Описание услуги", example="Обновленное описание консультации"),
-     *             @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=149.99)
+     *             @OA\Property(property="title", type="string", description="Название категории услуг", example="Спорт"),
+     *             @OA\Property(property="description", type="string", description="Описание категории услуг", example="Обновленное описание спортивных услуг")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Услуга обновлена",
+     *         description="Категория обновлена",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"updated"}, example="updated", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Услуга обновлена", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="message", type="string", example="Категория для услуг обновлена", description="Сообщение о результате запроса"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после обновления)")
      *         )
      *     ),
@@ -200,11 +192,11 @@ class AdminServiceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Услуга не найдена",
+     *         description="Категория не найдена",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Услуга не найдена", description="Сообщение об ошибке"),
+     *             @OA\Property(property="message", type="string", example="Категория для услуг не найдена", description="Сообщение об ошибке"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
      *         )
      *     ),
@@ -230,46 +222,46 @@ class AdminServiceController extends Controller
      *     )
      * )
      */
-    public function update(ServiceRequest $request, string $id)
+    public function update(ServiceCategoryResource $request, string $id)
     {
         try {
-            $this->serviceService->updateService($request->only('title', 'description', 'price'), $id);
+            $this->serviceCategoryService->updateServiceCategory($request->only('title', 'description'), $id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Услуга не найдена',
+                'message' => 'Категория для услуг не найдена',
                 'data' => null
             ], 404);
         }
 
         return response()->json([
             'status' => 'updated',
-            'message' => 'Услуга обновлена',
+            'message' => 'Категория для услуг обновлена',
             'data' => null
         ]);
     }
 
     /**
      * @OA\Delete(
-     *     path="/api/admin/service/{id}",
+     *     path="/api/admin/service-categories/{id}",
      *     tags={"Admin"},
-     *     summary="Удалить услугу по идентификатору",
-     *     operationId="deleteServiceAdmin",
+     *     summary="Удалить категорию услуг по идентификатору",
+     *     operationId="deleteServiceCategoryAdmin",
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Идентификатор услуги",
+     *         description="Идентификатор категории услуг",
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Услуга удалена",
+     *         description="Категория удалена",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"deleted"}, example="deleted", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Услуга удалена", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="message", type="string", example="Категория для услуг удалена", description="Сообщение о результате запроса"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после удаления)")
      *         )
      *     ),
@@ -285,11 +277,11 @@ class AdminServiceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Услуга не найдена",
+     *         description="Категория не найдена",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Услуга не найдена", description="Сообщение об ошибке"),
+     *             @OA\Property(property="message", type="string", example="Категория для услуг не найдена", description="Сообщение об ошибке"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
      *         )
      *     ),
@@ -307,11 +299,11 @@ class AdminServiceController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->serviceService->deleteServiceById($id);
+        $this->serviceCategoryService->deleteServiceCategoryById($id);
 
         return response()->json([
             'status' => 'deleted',
-            'message' => 'Услуга удалена',
+            'message' => 'Категория для услуг удалена',
             'data' => null
         ]);
     }

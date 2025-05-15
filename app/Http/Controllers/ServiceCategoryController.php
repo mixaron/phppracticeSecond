@@ -2,50 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ServiceResource;
-use App\Services\ServiceService;
+use App\Http\Resources\ServiceCategoryResource;
+use App\Services\ServiceCategoryService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
-class ServiceController extends Controller
+class ServiceCategoryController extends Controller
 {
-    private ServiceService $serviceService;
+    private ServiceCategoryService $serviceCategoryService;
 
-    public function __construct(ServiceService $serviceService)
+    public function __construct(ServiceCategoryService $serviceCategoryService)
     {
-        $this->serviceService = $serviceService;
+        $this->serviceCategoryService = $serviceCategoryService;
     }
 
     /**
      * @OA\Get(
-     *     path="/api/service",
+     *     path="/api/service-category",
      *     tags={"Service"},
-     *     summary="Получить список всех услуг или по категории",
-     *     operationId="getAllServices",
-     *     @OA\Parameter(
-     *         name="category_id",
-     *         in="query",
-     *         description="ID категории для фильтрации услуг",
-     *         required=false,
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
+     *     summary="Получить список всех категорий услуг",
+     *     operationId="getAllServiceCategories",
      *     @OA\Response(
      *         response=200,
-     *         description="Список услуг (возможно отфильтрованный по категории)",
+     *         description="Список категорий услуг",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Список услуг по категории", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="message", type="string", example="Список категорий новостей", description="Сообщение о результате запроса"),
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 description="Массив услуг",
+     *                 description="Массив категорий услуг",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор услуги"),
-     *                     @OA\Property(property="title", type="string", description="Название услуги"),
-     *                     @OA\Property(property="description", type="string", description="Описание услуги"),
-     *                     @OA\Property(property="price", type="number", format="float", description="Стоимость услуги"),
+     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор категории услуг"),
+     *                     @OA\Property(property="title", type="string", description="Название категории услуг"),
+     *                     @OA\Property(property="description", type="string", description="Описание категории услуг"),
      *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
      *                 )
@@ -64,52 +55,44 @@ class ServiceController extends Controller
      *     )
      * )
      */
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->has('category_id') && is_numeric($request->query('category_id'))) {
-            $allServices = $this->serviceService->getAllServicesByCategoryId($request->query('category_id'));
-            $message = 'Список услуг по категории';
-        } else {
-            $allServices = $this->serviceService->getAllServices();
-            $message = 'Список услуг';
-        }
+        $newsList = $this->serviceCategoryService->getAllServiceCategory();
 
         return response()->json([
             'status' => 'success',
-            'message' => $message,
-            'data' => ServiceResource::collection($allServices)
+            'message' => 'Список категорий услуг',
+            'data' => ServiceCategoryResource::collection($newsList)
         ]);
     }
 
-
     /**
      * @OA\Get(
-     *     path="/api/service/{id}",
+     *     path="/api/service-category/{id}",
      *     tags={"Service"},
-     *     summary="Получить услугу по идентификатору",
-     *     operationId="getServiceById",
+     *     summary="Получить категорию услуг по идентификатору",
+     *     operationId="getServiceCategoryById",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Идентификатор услуги",
+     *         description="Идентификатор категории услуг",
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Услуга",
+     *         description="Категория услуг",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Услуга по id", description="Сообщение о результате запроса"),
+     *             @OA\Property(property="message", type="string", example="Категория новости по id", description="Сообщение о результате запроса"),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 description="Данные услуги",
-     *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор услуги"),
-     *                 @OA\Property(property="title", type="string", description="Название услуги"),
-     *                 @OA\Property(property="description", type="string", description="Описание услуги"),
-     *                 @OA\Property(property="price", type="number", format="float", description="Стоимость услуги"),
+     *                 description="Данные категории услуг",
+     *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор категории услуг"),
+     *                 @OA\Property(property="title", type="string", description="Название категории услуг"),
+     *                 @OA\Property(property="description", type="string", description="Описание категории услуг"),
      *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
      *             )
@@ -117,11 +100,11 @@ class ServiceController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Услуга не найдена",
+     *         description="Категория услуги не найдена",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
-     *             @OA\Property(property="message", type="string", example="Услуга не найдена", description="Сообщение об ошибке"),
+     *             @OA\Property(property="message", type="string", example="Категория новости не найдена", description="Сообщение об ошибке"),
      *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
      *         )
      *     ),
@@ -140,19 +123,19 @@ class ServiceController extends Controller
     public function show(string $id)
     {
         try {
-            $service = $this->serviceService->getServiceById($id);
+            $news = $this->serviceCategoryService->getServiceCategoryById($id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Услуга не найдена',
+                'message' => 'Категория услуг не найдена',
                 'data' => null
             ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Услуга по id',
-            'data' => new ServiceResource($service)
+            'message' => 'Категория услуг по id',
+            'data' => new ServiceCategoryResource($news)
         ]);
     }
 }

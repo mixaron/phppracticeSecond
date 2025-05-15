@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ServiceRequest extends FormRequest
+class ServiceCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +23,7 @@ class ServiceRequest extends FormRequest
     {
         return [
             'title' => "required|string|max:255",
-            'description' => "required|string",
-            'price' => "required|decimal:1|min:0|max:99999",
-            'category_id' => "required|exists:service_category,id"
+            'description' => "required|string"
         ];
     }
 }

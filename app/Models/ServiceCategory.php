@@ -5,32 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Service extends Model
+class ServiceCategory extends Model
+{
     /**
      * @OA\Schema(
-     *     schema="Service",
+     *     schema="ServiceCategory",
      *     @OA\Property(property="id", type="integer"),
      *     @OA\Property(property="title", type="string"),
-     *     @OA\Property(property="desciprion", type="string"),
-     *     @OA\Property(property="price", type="decimal")
+     *     @OA\Property(property="desciprion", type="string")
      *
      * )
      */
-{
+    protected $table = 'service_category';
+
     protected $fillable = [
         'title',
         'description',
 //        'image',
-        'category_id',
-        'price',
         'created_at',
         'updated_at'
     ];
-
-    public function serviceRequests()
-    {
-        return $this->hasMany(UserRequest::class);
-    }
 
     public function serviceCategory(): BelongsTo
     {
