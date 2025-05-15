@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository
 {
@@ -29,6 +30,16 @@ class UserRepository
     public function count(): int
     {
         return User::count();
+    }
+
+    public function findAll(): Collection
+    {
+        return User::all();
+    }
+
+    public function deleteById(string $id): void
+    {
+        User::destroy($id);
     }
 
 }

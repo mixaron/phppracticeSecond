@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class UserService
 {
@@ -44,6 +46,35 @@ class UserService
     public function getUsersCount(): int
     {
         return $this->userRepository->count();
+    }
+
+    public function getAllUsers(): Collection
+    {
+        return $this->userRepository->findAll();
+    }
+
+    public function deleteUserById(string $id): void
+    {
+        $this->userRepository->deleteById($id);
+    }
+
+    public function changeRole(string $id, mixed $input): void
+    {
+        $user = User::findOrFail($id);
+        $user->role = $input;
+        $user->save();
+    }
+
+    public function changePassword(array $array): void
+    {
+        $user = auth()->user();
+
+        if (!Hash::check($array['oldPassword'], $user->password)) {
+            throw new BadRequestException('Старый пароль не совпадает');
+        }
+
+        $user->password = Hash::make($array['newPassword']);
+        $user->save();
     }
 
 }

@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Services\UserService;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class AuthController extends Controller
 {
@@ -30,7 +31,6 @@ class AuthController extends Controller
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="email", type="string", format="email"),
      *             @OA\Property(property="phone", type="string"),
-     *             @OA\Property(property="role", type="string"),
      *             @OA\Property(property="password", type="string", format="password")
      *         )
      *     ),
@@ -40,7 +40,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $user = $this->userService->createUser($request->only([
-            'name', 'email', 'phone', 'role', 'password'
+            'name', 'email', 'phone', 'password'
         ]));
 
         $token = $this->authService->generateToken($user);
