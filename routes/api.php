@@ -3,6 +3,7 @@
 use App\Http\Controllers\admin\AdminNewsCategoryController;
 use App\Http\Controllers\admin\AdminNewsController;
 use App\Http\Controllers\admin\AdminPageController;
+use App\Http\Controllers\admin\AdminReviewController;
 use App\Http\Controllers\admin\AdminServiceCategoryController;
 use App\Http\Controllers\admin\AdminServiceController;
 use App\Http\Controllers\admin\AdminUserRequestController;
@@ -50,6 +51,9 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/requests', [AdminUserRequestController::class, 'showRequests']);
     Route::patch('/requests/{id}/status', [AdminUserRequestController::class, 'changeStatus']);
+
+    Route::get('/reviews', [AdminReviewController::class, 'index']);
+    Route::patch('/reviews/{id}/status', [AdminReviewController::class, 'changeReviewStatus']);
 });
 
 // добавить изменение пароля
@@ -58,4 +62,4 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 // todo создать акции, фотки, сделать админку, добавить изменение пароля
 // todo решить проблему с заявкой и несуществующей услугой
 // todo ДОКУМЕНТАЦИЯ таблица компании, отзывы,
-// доделать админку для отзывов
+// доделать админку для отзывов, проверить

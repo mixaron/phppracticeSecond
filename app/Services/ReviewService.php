@@ -17,7 +17,7 @@ class ReviewService
         $this->reviewRepository = $reviewRepository;
     }
 
-    public function getAllREviews(): Collection
+    public function getAllReviews(): Collection
     {
         return $this->reviewRepository->findAll();
     }
@@ -70,5 +70,11 @@ class ReviewService
     public function getAllReviewByServiceId(int $id): Collection
     {
         return $this->reviewRepository->getAllByServiceId($id);
+    }
+
+    public function changeStatus(string $id, string $input): void
+    {
+        $review = $this->reviewRepository->getById($id);
+        $review->status = $input;
     }
 }
