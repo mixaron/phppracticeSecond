@@ -28,6 +28,13 @@ class AdminNewsController extends Controller
      *     summary="Получить список всех новостей",
      *     operationId="getAllNewsAdmin",
      *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="query",
+     *         required=false,
+     *         description="Идентификатор категории для фильтрации новостей",
+     *         @OA\Schema(type="integer")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Список новостей",
@@ -42,14 +49,25 @@ class AdminNewsController extends Controller
      *                 @OA\Items(
      *                     type="object",
      *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор новости"),
-     *                     @OA\Property(property="title", type="string", description="Заголовок новости"),
-     *                     @OA\Property(property="description", type="string", description="Описание новости"),
+     *                     @OA\Property(property="title", type="string", description="Заголовок новости", example="Новая новость"),
+     *                     @OA\Property(property="description", type="string", description="Описание новости", example="Описание новой новости"),
      *                     @OA\Property(
      *                         property="category",
      *                         type="object",
      *                         description="Категория новости",
      *                         @OA\Property(property="id", type="string", description="Уникальный идентификатор категории"),
-     *                         @OA\Property(property="title", type="string", description="Название категории")
+     *                         @OA\Property(property="title", type="string", description="Название категории", example="Объявления")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="images",
+     *                         type="array",
+     *                         description="Список URL изображений новости",
+     *                         @OA\Items(
+     *                             type="string",
+     *                             format="url",
+     *                             description="URL изображения",
+     *                             example="https://example.com/images/news.jpg"
+     *                         )
      *                     ),
      *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
@@ -105,12 +123,25 @@ class AdminNewsController extends Controller
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             required={"title", "description", "category_id"},
-     *             @OA\Property(property="title", type="string", description="Заголовок новости", example="Новая новость"),
-     *             @OA\Property(property="description", type="string", description="Описание новости", example="Описание новой новости"),
-     *             @OA\Property(property="category_id", type="string", description="Идентификатор категории новости", example="1")
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"title", "description", "category_id"},
+     *                 @OA\Property(property="title", type="string", description="Заголовок новости", example="Новая новость", maxLength=255),
+     *                 @OA\Property(property="description", type="string", description="Описание новости", example="Описание новой новости"),
+     *                 @OA\Property(property="category_id", type="string", description="Идентификатор категории новости", example="1"),
+     *                 @OA\Property(
+     *                     property="images",
+     *                     type="array",
+     *                     description="Массив изображений для новости",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="binary",
+     *                         description="Изображение в формате jpg, jpeg, png или webp (макс. 2MB)"
+     *                     )
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -120,7 +151,34 @@ class AdminNewsController extends Controller
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"created"}, example="created", description="Статус запроса"),
      *             @OA\Property(property="message", type="string", example="Новость создана", description="Сообщение о результате запроса"),
-     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после создания)")
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Созданная новость",
+     *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор новости"),
+     *                 @OA\Property(property="title", type="string", description="Заголовок новости", example="Новая новость"),
+     *                 @OA\Property(property="description", type="string", description="Описание новости", example="Описание новой новости"),
+     *                 @OA\Property(
+     *                     property="category",
+     *                     type="object",
+     *                     description="Категория новости",
+     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор категории"),
+     *                     @OA\Property(property="title", type="string", description="Название категории", example="Объявления")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="images",
+     *                     type="array",
+     *                     description="Список URL изображений новости",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="url",
+     *                         description="URL изображения",
+     *                         example="https://example.com/images/news.jpg"
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -165,7 +223,7 @@ class AdminNewsController extends Controller
         return response()->json([
             'status' => 'created',
             'message' => 'Новость создана',
-            'data' => New NewsResource($news)
+            'data' => new NewsResource($news)
         ]);
     }
 

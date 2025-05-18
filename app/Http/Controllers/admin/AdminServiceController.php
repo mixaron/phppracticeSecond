@@ -19,6 +19,7 @@ class AdminServiceController extends Controller
         $this->serviceService = $serviceService;
         $this->imageService = $imageService;
     }
+
     /**
      * @OA\Get(
      *     path="/api/admin/services",
@@ -39,15 +40,27 @@ class AdminServiceController extends Controller
      *                 description="Массив услуг",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор услуг"),
-     *                     @OA\Property(property="title", type="string", description="Заголовок услуг"),
-     *                     @OA\Property(property="description", type="string", description="Описание услуг"),
+     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор услуги"),
+     *                     @OA\Property(property="title", type="string", description="Название услуги", example="Консультация"),
+     *                     @OA\Property(property="description", type="string", description="Описание услуги", example="Профессиональная консультация по услугам"),
+     *                     @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=99.99),
      *                     @OA\Property(
      *                         property="category",
      *                         type="object",
-     *                         description="Категория услуг",
+     *                         description="Категория услуги",
      *                         @OA\Property(property="id", type="string", description="Уникальный идентификатор категории"),
-     *                         @OA\Property(property="title", type="string", description="Название категории")
+     *                         @OA\Property(property="title", type="string", description="Название категории", example="Консультационные услуги")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="images",
+     *                         type="array",
+     *                         description="Список URL изображений услуги",
+     *                         @OA\Items(
+     *                             type="string",
+     *                             format="url",
+     *                             description="URL изображения",
+     *                             example="https://example.com/images/service.jpg"
+     *                         )
      *                     ),
      *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
@@ -97,12 +110,26 @@ class AdminServiceController extends Controller
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             required={"title", "description", "price"},
-     *             @OA\Property(property="title", type="string", description="Название услуги", example="Консультация"),
-     *             @OA\Property(property="description", type="string", description="Описание услуги", example="Профессиональная консультация по услугам"),
-     *             @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=99.99)
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"title", "description", "price", "category_id"},
+     *                 @OA\Property(property="title", type="string", description="Название услуги", example="Консультация", maxLength=255),
+     *                 @OA\Property(property="description", type="string", description="Описание услуги", example="Профессиональная консультация по услугам"),
+     *                 @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=99.99, minimum=0),
+     *                 @OA\Property(property="category_id", type="string", description="Идентификатор категории услуги", example="1"),
+     *                 @OA\Property(
+     *                     property="images",
+     *                     type="array",
+     *                     description="Массив изображений для услуги",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="binary",
+     *                         description="Изображение в формате jpg, jpeg, png или webp (макс. 2MB)"
+     *                     )
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -112,7 +139,35 @@ class AdminServiceController extends Controller
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"created"}, example="created", description="Статус запроса"),
      *             @OA\Property(property="message", type="string", example="Услуга создана", description="Сообщение о результате запроса"),
-     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют после создания)")
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Созданная услуга",
+     *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор услуги"),
+     *                 @OA\Property(property="title", type="string", description="Название услуги", example="Консультация"),
+     *                 @OA\Property(property="description", type="string", description="Описание услуги", example="Профессиональная консультация по услугам"),
+     *                 @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=99.99),
+     *                 @OA\Property(
+     *                     property="category",
+     *                     type="object",
+     *                     description="Категория услуги",
+     *                     @OA\Property(property="id", type="string", description="Уникальный идентификатор категории"),
+     *                     @OA\Property(property="title", type="string", description="Название категории", example="Консультационные услуги")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="images",
+     *                     type="array",
+     *                     description="Список URL изображений услуги",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="url",
+     *                         description="URL изображения",
+     *                         example="https://example.com/images/service.jpg"
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
+     *             )
      *         )
      *     ),
      *     @OA\Response(
