@@ -16,9 +16,9 @@ class ServiceRepository
         return Service::all();
     }
 
-    public function saveService(array $data): void
+    public function saveService(array $data): Service
     {
-        Service::create($data);
+        return Service::create($data);
     }
 
     public function getById(string $id): Service
@@ -26,9 +26,9 @@ class ServiceRepository
         return Service::findOrFail($id);
     }
 
-    public function update($currentService): void
+    public function update($currentService): Service
     {
-        $currentService->save();
+        return $currentService->save();
     }
 
     public function deleteById(string $id): void

@@ -25,7 +25,9 @@ class ServiceRequest extends FormRequest
             'title' => "required|string|max:255",
             'description' => "required|string",
             'price' => "required|decimal:1|min:0|max:99999",
-            'category_id' => "required|exists:service_category,id"
+            'category_id' => "required|exists:service_category,id",
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 }

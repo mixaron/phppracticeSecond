@@ -5,16 +5,19 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Http\Resources\ServiceResource;
+use App\Services\ImageService;
 use App\Services\ServiceService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdminServiceController extends Controller
 {
     private ServiceService $serviceService;
+    private ImageService $imageService;
 
-    public function __construct(ServiceService $serviceService)
+    public function __construct(ServiceService $serviceService, \App\Services\ImageService $imageService)
     {
         $this->serviceService = $serviceService;
+        $this->imageService = $imageService;
     }
     /**
      * @OA\Get(
@@ -146,17 +149,21 @@ class AdminServiceController extends Controller
      */
     public function store(ServiceRequest $request)
     {
-        $this->serviceService->addService($request->only(['title', 'description', 'price', 'category_id']));
+        $service = $this->serviceService->addService($request->only(['title', 'description', 'price', 'category_id']));
+
+        if ($request->hasFile('images')) {
+            $this->imageService->addImages($request->file('images'), $service);
+        }
 
         return response()->json([
             'status' => 'created',
             'message' => 'Услуга создана',
-            'data' => null
+            'data' => new ServiceResource($service)
         ]);
     }
 
     /**
-     * @OA\Patch(
+     * @OA\Post(
      *     path="/api/admin/services/{id}",
      *     tags={"Admin/Services"},
      *     summary="Обновить услугу по идентификатору",
@@ -170,12 +177,27 @@ class AdminServiceController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="title", type="string", description="Название услуги", example="Обновленная консультация"),
-     *             @OA\Property(property="description", type="string", description="Описание услуги", example="Обновленное описание консультации"),
-     *             @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=149.99)
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"title", "description", "price", "_method"},
+     *                 @OA\Property(property="_method", type="string", enum={"PATCH"}, description="Метод HTTP для эмуляции PATCH", example="PATCH"),
+     *                 @OA\Property(property="title", type="string", description="Название услуги", example="Обновленная консультация", maxLength=255),
+     *                 @OA\Property(property="description", type="string", description="Описание услуги", example="Обновленное описание консультации"),
+     *                 @OA\Property(property="price", type="number", format="float", description="Стоимость услуги", example=149.99, minimum=0),
+     *                 @OA\Property(
+     *                     property="images",
+     *                     type="array",
+     *                     description="Массив изображений для услуги",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="binary",
+     *                         description="Изображение в формате jpg, jpeg, png или webp (макс. 2MB)"
+     *                     )
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -233,7 +255,11 @@ class AdminServiceController extends Controller
     public function update(ServiceRequest $request, string $id)
     {
         try {
-            $this->serviceService->updateService($request->only('title', 'description', 'price'), $id);
+            $service = $this->serviceService->updateService($request->only('title', 'description', 'price'), $id);
+
+            if ($request->hasFile('images')) {
+                $this->imageService->updateImages($request->file('images'), $service);
+            }
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
