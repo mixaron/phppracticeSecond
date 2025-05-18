@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminContactsController;
 use App\Http\Controllers\admin\AdminNewsCategoryController;
 use App\Http\Controllers\admin\AdminNewsController;
 use App\Http\Controllers\admin\AdminPageController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\admin\AdminServiceCategoryController;
 use App\Http\Controllers\admin\AdminServiceController;
 use App\Http\Controllers\admin\AdminUserRequestController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\NewsCategoryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UserReviewController;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+Route::get('/contacts', [ContactsController::class, 'index']);
 Route::apiResource('/news-categories', NewsCategoryController::class);
 Route::apiResource('/news', NewsController::class);
 Route::apiResource('/services-categories', ServiceCategoryController::class);
@@ -40,6 +43,7 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/users/{id}', [AdminPageController::class, 'deleteUser']);
     Route::patch('/users/{id}/role', [AdminPageController::class, 'changeUserRole']);
 
+    Route::apiResource('/contacts', AdminContactsController::class);
 
     Route::apiResource('/news-categories', AdminNewsCategoryController::class)
         ->names('admin.news-categories');
@@ -62,4 +66,8 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 // todo создать акции, фотки, сделать админку, добавить изменение пароля
 // todo решить проблему с заявкой и несуществующей услугой
 // todo ДОКУМЕНТАЦИЯ таблица компании, отзывы,
-// доделать админку для отзывов, проверить
+// доделать админку для отзывов, проверить, закешировать данные, которые будут передаваться часто и не уникальные для определенного пользователя
+// валидировать аутентификацию
+
+// нельзя передавать form data в метод patch, переделать новости под фото тоже, чтобы удалить сервис надо удалить фото,
+// чтобы удалить фото надо удалить из бд + из папки проекта
