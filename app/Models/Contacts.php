@@ -11,7 +11,7 @@ class Contacts extends Model
      *     @OA\Property(property="id", type="integer"),
      *     @OA\Property(property="address", type="string"),
      *     @OA\Property(property="phone", type="string"),
-     *     @OA\Property(property="email", type="email")
+     *     @OA\Property(property="email", type="email"),
      *     @OA\Property(property="work_time", type="string")
      * )
      */

@@ -255,8 +255,7 @@ class AdminContactsController extends Controller
      *             @OA\Property(property="data", type="object", description="Детали ошибки валидации")
      *         )
      *     ),
-     *     @OW
-    A\Response(
+     *     @OA\Response(
      *         response=500,
      *         description="Внутренняя ошибка сервера",
      *         @OA\JsonContent(
