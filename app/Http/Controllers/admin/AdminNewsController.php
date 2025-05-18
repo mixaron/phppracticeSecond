@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NewsRequest;
 use App\Http\Resources\NewsResource;
+use App\Services\ImageService;
 use App\Services\NewsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -12,10 +13,12 @@ use Illuminate\Http\Request;
 class AdminNewsController extends Controller
 {
     private NewsService $newsService;
+    private ImageService $imageService;
 
-    public function __construct(NewsService $newsService)
+    public function __construct(NewsService $newsService, \App\Services\ImageService $imageService)
     {
         $this->newsService = $newsService;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -154,17 +157,20 @@ class AdminNewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
-        $this->newsService->addNews($request->only(['title', 'description', 'category_id']));
+        $news = $this->newsService->addNews($request->only(['title', 'description', 'category_id']));
 
+        if ($request->hasFile('images')) {
+            $this->imageService->addImages($request->file('images'), $news);
+        }
         return response()->json([
             'status' => 'created',
             'message' => 'Новость создана',
-            'data' => null
+            'data' => New NewsResource($news)
         ]);
     }
 
     /**
-     * @OA\Patch(
+     * @OA\Post(
      *     path="/api/admin/news/{id}",
      *     tags={"Admin/News"},
      *     summary="Обновить новость по идентификатору",
@@ -178,12 +184,27 @@ class AdminNewsController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="title", type="string", description="Заголовок новости", example="Обновленная новость"),
-     *             @OA\Property(property="description", type="string", description="Описание новости", example="Обновленное описание новости"),
-     *             @OA\Property(property="category_id", type="string", description="Идентификатор категории новости", example="1")
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"title", "description", "category_id", "_method"},
+     *                 @OA\Property(property="_method", type="string", enum={"PATCH"}, description="Метод HTTP для эмуляции PATCH", example="PATCH"),
+     *                 @OA\Property(property="title", type="string", description="Заголовок новости", example="Обновленная новость", maxLength=255),
+     *                 @OA\Property(property="description", type="string", description="Описание новости", example="Обновленное описание новости"),
+     *                 @OA\Property(property="category_id", type="string", description="Идентификатор категории новости", example="1"),
+     *                 @OA\Property(
+     *                     property="images",
+     *                     type="array",
+     *                     description="Массив изображений для новости",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="binary",
+     *                         description="Изображение в формате jpg, jpeg, png или webp (макс. 2MB)"
+     *                     )
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -208,7 +229,7 @@ class AdminNewsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Новость не найдена",
+     *         description="Новость или категория не найдены",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
@@ -241,7 +262,11 @@ class AdminNewsController extends Controller
     public function update(NewsRequest $request, string $id)
     {
         try {
-            $this->newsService->updateNews($request->only('title', 'description', 'category_id'), $id);
+            $service = $this->newsService->updateNews($request->only('title', 'description', 'category_id'), $id);
+
+            if ($request->hasFile('images')) {
+                $this->imageService->updateImages($request->file('images'), $service);
+            }
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
@@ -316,7 +341,6 @@ class AdminNewsController extends Controller
     public function destroy(string $id)
     {
         $this->newsService->deleteNewsById($id);
-
         return response()->json([
             'status' => 'deleted',
             'message' => 'Новость успешно удалена',

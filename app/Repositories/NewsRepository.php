@@ -16,9 +16,9 @@ class NewsRepository
         return News::all();
     }
 
-    public function saveNews(array $data): void
+    public function saveNews(array $data): News
     {
-        News::create($data);
+        return News::create($data);
     }
 
     public function getById(string $id): News

@@ -24,7 +24,10 @@ class NewsRequest extends FormRequest
         return [
             'title' => "required|string|max:255",
             'description' => "required|string",
-            'category_id' => "required|exists:news_category,id"
+            'category_id' => "required|exists:news_category,id",
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
+
 }

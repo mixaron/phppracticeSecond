@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class News extends Model
     /**
@@ -20,7 +21,6 @@ class News extends Model
     protected $fillable = [
         'title',
         'description',
-//        'image',
         'category_id',
         'created_at',
         'updated_at'
@@ -29,5 +29,10 @@ class News extends Model
     public function newsCategory(): BelongsTo
     {
         return $this->belongsTo(NewsCategory::class, 'category_id');
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

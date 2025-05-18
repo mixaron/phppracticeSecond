@@ -17,6 +17,7 @@ class NewsResource extends JsonResource
                 'id' => $this->newsCategory->id,
                 'title' => $this->newsCategory->title,
             ],
+            'images' => $this->images->map(fn($img) => asset('storage/' . $img->path)),
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String()
         ];
