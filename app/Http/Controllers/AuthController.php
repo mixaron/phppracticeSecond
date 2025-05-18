@@ -27,8 +27,9 @@ class AuthController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name","email","phone","role","password"},
-     *             @OA\Property(property="name", type="string"),
+     *             required={"firstname", "lastname","email","phone","role","password"},
+     *             @OA\Property(property="firstname", type="string"),
+     *             @OA\Property(property="lastname", type="string"),
      *             @OA\Property(property="email", type="string", format="email"),
      *             @OA\Property(property="phone", type="string"),
      *             @OA\Property(property="password", type="string", format="password")
@@ -40,7 +41,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $user = $this->userService->createUser($request->only([
-            'name', 'email', 'phone', 'password'
+            'firstname', 'lastname', 'email', 'phone', 'password'
         ]));
 
         $token = $this->authService->generateToken($user);
@@ -60,8 +61,8 @@ class AuthController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name","password"},
-     *             @OA\Property(property="name", type="string"),
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string"),
      *             @OA\Property(property="password", type="string", format="password")
      *         )
      *     ),
@@ -72,7 +73,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $token = $this->authService->attemptLogin(
-            $request->only('name', 'password')
+            $request->only('email', 'password')
         );
 
         if (!$token) {

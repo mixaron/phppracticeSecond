@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EditUserRequest;
-use App\Http\Resources\EditUserResource;
+use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -36,7 +36,8 @@ class UserController extends Controller
      *                 type="object",
      *                 description="Данные пользователя",
      *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор пользователя"),
-     *                 @OA\Property(property="name", type="string", description="Имя пользователя"),
+     *                 @OA\Property(property="firstname", type="string", description="Имя пользователя"),
+     *                 @OA\Property(property="lastname", type="string", description="Фамилия пользователя"),
      *                 @OA\Property(property="email", type="string", format="email", description="Электронная почта пользователя"),
      *                 @OA\Property(property="phone", type="string", description="Телефон пользователя"),
      *                 @OA\Property(property="role", type="string", description="Роль пользователя"),
@@ -73,7 +74,7 @@ class UserController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Пользователь',
-            'data' => new EditUserResource($user)
+            'data' => new UserResource($user)
         ]);
     }
 
@@ -88,7 +89,8 @@ class UserController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="name", type="string", description="Имя пользователя", example="Иван Иванов"),
+     *             @OA\Property(property="firstname", type="string", description="Имя пользователя", example="Иван"),
+     *             @OA\Property(property="lastname", type="string", description="Фамилия пользователя", example="Иванов"),
      *             @OA\Property(property="email", type="string", format="email", description="Электронная почта пользователя", example="ivan@example.com"),
      *             @OA\Property(property="phone", type="string", description="Телефон пользователя", example="+79991234567"),
      *             @OA\Property(property="role", type="string", description="Роль пользователя", example="user")
@@ -106,7 +108,8 @@ class UserController extends Controller
      *                 type="object",
      *                 description="Данные пользователя",
      *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор пользователя"),
-     *                 @OA\Property(property="name", type="string", description="Имя пользователя"),
+     *                 @OA\Property(property="firstname", type="string", description="Имя пользователя"),
+     *                 @OA\Property(property="lastname", type="string", description="Фамилия пользователя"),
      *                 @OA\Property(property="email", type="string", format="email", description="Электронная почта пользователя"),
      *                 @OA\Property(property="phone", type="string", description="Телефон пользователя"),
      *                 @OA\Property(property="role", type="string", description="Роль пользователя"),
@@ -147,14 +150,14 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function update(EditUserRequest $request)
+    public function update(UserRequest $request)
     {
-        $user = $this->userService->editUser($request->only(['name', 'email', 'phone']));
+        $user = $this->userService->editUser($request->only(['firstname', 'lastname', 'email', 'phone']));
 
         return response()->json([
             'status' => 'updated',
             'message' => 'Пользователь обновлен',
-            'data' => new EditUserResource($user)
+            'data' => new UserResource($user)
         ]);
     }
 

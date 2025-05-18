@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\UserRequestRequest;
 use App\Http\Resources\UserRequestResource;
 use App\Services\UserRequestService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -228,7 +228,7 @@ class UserRequestController extends Controller
      *     )
      * )
      */
-    public function store(UserRequest $request)
+    public function store(UserRequestRequest $request)
     {
         $status = 'created';
         $message = 'Заявка создана';
@@ -464,7 +464,7 @@ class UserRequestController extends Controller
      *     )
      * )
      */
-    public function update(UserRequest $request, string $id)
+    public function update(UserRequestRequest $request, string $id)
     {
         $user = auth()->user();
 

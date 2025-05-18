@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\EditUserResource;
-use App\Http\Resources\UserRequestResource;
-use App\Models\User;
+use App\Http\Resources\UserResource;
 use App\Services\NewsService;
 use App\Services\ReviewService;
 use App\Services\ServiceService;
@@ -104,7 +102,7 @@ class AdminPageController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Список пользователей',
-            'data' => EditUserResource::collection($users)
+            'data' => UserResource::collection($users)
         ]);
     }
 

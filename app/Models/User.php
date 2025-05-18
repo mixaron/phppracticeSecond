@@ -12,7 +12,8 @@ class User extends Authenticatable implements JWTSubject
      * @OA\Schema(
      *     schema="User",
      *     @OA\Property(property="id", type="integer"),
-     *     @OA\Property(property="name", type="string"),
+     *     @OA\Property(property="firstname", type="string"),
+     *     @OA\Property(property="lastname", type="string"),
      *     @OA\Property(property="email", type="string"),
      *     @OA\Property(property="phone", type="string"),
      *     @OA\Property(property="role", type="string")
@@ -23,7 +24,8 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'name',
+        'firstname',
+        'lastname',
         'email',
         'password',
         'phone',

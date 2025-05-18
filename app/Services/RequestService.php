@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\UserRequestRequest;
 use App\Repositories\UserRequestRepository;
 use Illuminate\Support\Collection;
 
