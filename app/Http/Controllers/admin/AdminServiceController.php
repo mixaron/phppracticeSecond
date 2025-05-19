@@ -8,6 +8,7 @@ use App\Http\Resources\ServiceResource;
 use App\Services\ImageService;
 use App\Services\ServiceService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class AdminServiceController extends Controller
 {
@@ -90,9 +91,9 @@ class AdminServiceController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $serviceList = $this->serviceService->getAllServices();
+        $serviceList = $this->serviceService->getListWithCache($request['category_id']);
 
         return response()->json([
             'status' => 'success',

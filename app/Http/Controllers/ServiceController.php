@@ -72,22 +72,12 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('category_id') && is_numeric($request->query('category_id'))) {
-            $allServices = $this->serviceService->getAllServicesByCategoryId($request->query('category_id'));
-            if ($allServices->isEmpty()) {
-                $message = 'Услуг по такой категории еще нет';
-            } else {
-                $message = 'Список услуг по категории';
-            }
-        } else {
-            $allServices = $this->serviceService->getAllServices();
-            $message = 'Список услуг';
-        }
+        $servicesWithCache = $this->serviceService->getListWithCache($request->input('category_id'));
 
         return response()->json([
             'status' => 'success',
-            'message' => $message,
-            'data' => ServiceResource::collection($allServices)
+            'message' => 'Список услуг',
+            'data' => ServiceResource::collection($servicesWithCache)
         ]);
     }
 
@@ -150,7 +140,7 @@ class ServiceController extends Controller
     public function show(string $id)
     {
         try {
-            $service = $this->serviceService->getServiceById($id);
+            $service = $this->serviceService->getEntityWithCache($id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',

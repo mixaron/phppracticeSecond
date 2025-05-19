@@ -2,24 +2,25 @@
 
 namespace App\Services;
 
+use App\Http\CacheableServiceInterface;
 use App\Models\Service;
 use App\Repositories\ServiceRepository;
 use Illuminate\Database\Eloquent\Collection;
 
-class ServiceService
+class ServiceService implements CacheableServiceInterface
 {
     private ServiceRepository $serviceRepository;
     private ImageService $imageService;
+    private CacheService $cacheService;
 
-    public function __construct(ServiceRepository $serviceRepository, ImageService $imageService)
+    private const CACHE_LIST_PREFIX = 'services_list';
+    private const CACHE_ENTITY_PREFIX = 'services_entity';
+
+    public function __construct(ServiceRepository $serviceRepository, ImageService $imageService, CacheService $cacheService)
     {
         $this->serviceRepository = $serviceRepository;
         $this->imageService = $imageService;
-    }
-
-    public function getAllServices(): Collection
-    {
-        return $this->serviceRepository->findAllServices();
+        $this->cacheService = $cacheService;
     }
 
     public function addService(array $data): Service
@@ -27,14 +28,11 @@ class ServiceService
         return $this->serviceRepository->saveService($data);
     }
 
-    public function getServiceById(string $id): Service
-    {
-        return $this->serviceRepository->getById($id);
-    }
-
     public function updateService(array $data, string $id): Service
     {
         $currentService = Service::findOrFail($id);
+        $this->clearCache($data['category_id'] ?? null, self::CACHE_LIST_PREFIX);
+        $this->clearCache(null, "services_entity_{$currentService->id}");
 
         $currentService->fill($data);
 
@@ -44,6 +42,9 @@ class ServiceService
     public function deleteServiceById(string $id): void
     {
         $service = $this->serviceRepository->getById($id);
+
+        $this->clearCache($data['category_id'] ?? null, self::CACHE_LIST_PREFIX);
+        $this->clearCache(null, "services_entity_{$service->id}");
 
         $this->imageService->deleteImages($service);
 
@@ -55,8 +56,29 @@ class ServiceService
         return $this->serviceRepository->count();
     }
 
-    public function getAllServicesByCategoryId(mixed $input): Collection
+    public function getListWithCache(?int $categoryId): Collection
     {
-        return Service::where('category_id', $input)->get();
+        return $this->cacheService->rememberByCategory(
+            'services_list',
+            $categoryId,
+            10,
+            function () use ($categoryId) {
+                return $categoryId
+                    ? $this->serviceRepository->getAllByCategoryId($categoryId)
+                    : $this->serviceRepository->findAllServices();
+            }
+        );
+    }
+
+    public function clearCache(mixed $categoryId, string $prefix): void
+    {
+        $this->cacheService->clearByCategory($prefix, $categoryId);
+    }
+
+    public function getEntityWithCache(int $id): mixed
+    {
+        return $this->cacheService->rememberById(self::CACHE_ENTITY_PREFIX, $id, 10, function () use ($id) {
+            return $this->serviceRepository->getById($id);
+        });
     }
 }

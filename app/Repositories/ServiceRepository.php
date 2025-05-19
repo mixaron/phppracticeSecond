@@ -41,4 +41,8 @@ class ServiceRepository
         return Service::count();
     }
 
+    public function getAllByCategoryId(mixed $input): Collection
+    {
+        return Service::where('category_id', $input)->get();
+    }
 }
