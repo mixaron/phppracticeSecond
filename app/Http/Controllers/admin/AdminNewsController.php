@@ -99,18 +99,12 @@ class AdminNewsController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('category_id') && is_numeric($request->query('category_id'))) {
-            $allServices = $this->newsService->getAllNewsByCategoryId($request->query('category_id'));
-            $message = 'Список новостей по категории';
-        } else {
-            $allServices = $this->newsService->getAllNews();
-            $message = 'Список новостей';
-        }
+        $news = $this->newsService->getListWithCache($request->input('category_id'));
 
         return response()->json([
             'status' => 'success',
-            'message' => $message,
-            'data' => NewsResource::collection($allServices)
+            'message' => 'Список новостей',
+            'data' => NewsResource::collection($news)
         ]);
     }
 

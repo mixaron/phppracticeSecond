@@ -78,22 +78,12 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('category_id') && is_numeric($request->input('category_id'))) {
-            $allNews = $this->newsService->getAllNewsByCategoryId($request->input('category_id'));
-            if ($allNews->isEmpty()) {
-                $message = 'Новостей по такой категории еще нет';
-            } else {
-                $message = 'Список новостей по категории';
-        }
-        } else {
-            $allNews = $this->newsService->getAllNews();
-            $message = 'Список новостей';
-        }
+        $news = $this->newsService->getListWithCache($request->input('category_id'));
 
         return response()->json([
             'status' => 'success',
-            'message' => $message,
-            'data' => NewsResource::collection($allNews)
+            'message' => 'Список новостей',
+            'data' => NewsResource::collection($news)
         ]);
     }
 
@@ -158,10 +148,10 @@ class NewsController extends Controller
      *     )
      * )
      */
-    public function show(string $id)
+    public function show(int $id)
     {
         try {
-            $news = $this->newsService->getNewsById($id);
+            $news = $this->newsService->getEntityWithCache($id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',

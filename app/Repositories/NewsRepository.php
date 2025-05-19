@@ -41,4 +41,9 @@ class NewsRepository
         return News::count();
     }
 
+    public function findAllNewsByCategoryId(int $categoryId): Collection
+    {
+        return News::where('category_id', $categoryId)->get();
+    }
+
 }
