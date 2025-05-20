@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class CacheService
 {
-    public function rememberByCategory(string $prefix,?int $categoryId, int $minutes, Closure $callback): Collection
+    public function rememberByCategory(string $prefix, ?int $categoryId, int $minutes, Closure $callback): Collection
     {
         $cacheKey = $categoryId ? "{$prefix}_category_{$categoryId}" : "{$prefix}_all";
 
@@ -20,6 +20,11 @@ class CacheService
         $cacheKey = "{$prefix}_{$id}_all";
 
         return Cache::remember($cacheKey, now()->addMinutes($minutes), $callback);
+    }
+
+    public function clearEntity(string $prefix, int $id): void
+    {
+        Cache::forget("{$prefix}_{$id}_all");
     }
 
     public function clearByCategory(string $prefix, mixed $categoryId): void

@@ -25,26 +25,30 @@ class ServiceService implements CacheableServiceInterface
 
     public function addService(array $data): Service
     {
-        return $this->serviceRepository->saveService($data);
+        $service =  $this->serviceRepository->saveService($data);
+        $this->clearCache(null, self::CACHE_LIST_PREFIX);
+        return $service;
     }
 
     public function updateService(array $data, string $id): Service
     {
         $currentService = Service::findOrFail($id);
-        $this->clearCache($data['category_id'] ?? null, self::CACHE_LIST_PREFIX);
-        $this->clearCache(null, "services_entity_{$currentService->id}");
+        $this->clearCache($currentService->category_id, self::CACHE_LIST_PREFIX);
+        $this->clearEntityCache(self::CACHE_ENTITY_PREFIX, $currentService->id);
+
 
         $currentService->fill($data);
 
-        return $this->serviceRepository->update($currentService);
+        $this->serviceRepository->update($currentService);
+        return $currentService;
     }
 
     public function deleteServiceById(string $id): void
     {
         $service = $this->serviceRepository->getById($id);
 
-        $this->clearCache($data['category_id'] ?? null, self::CACHE_LIST_PREFIX);
-        $this->clearCache(null, "services_entity_{$service->id}");
+        $this->clearCache($service->category_id, self::CACHE_LIST_PREFIX);
+        $this->clearEntityCache(self::CACHE_ENTITY_PREFIX, $service->id);
 
         $this->imageService->deleteImages($service);
 
@@ -59,11 +63,11 @@ class ServiceService implements CacheableServiceInterface
     public function getListWithCache(?int $categoryId): Collection
     {
         return $this->cacheService->rememberByCategory(
-            'services_list',
+            self::CACHE_LIST_PREFIX,
             $categoryId,
             10,
             function () use ($categoryId) {
-                return $categoryId
+                return $categoryId !== null
                     ? $this->serviceRepository->getAllByCategoryId($categoryId)
                     : $this->serviceRepository->findAllServices();
             }
@@ -73,6 +77,11 @@ class ServiceService implements CacheableServiceInterface
     public function clearCache(mixed $categoryId, string $prefix): void
     {
         $this->cacheService->clearByCategory($prefix, $categoryId);
+    }
+
+    public function clearEntityCache(string $prefix, int $id): Void
+    {
+        $this->cacheService->clearEntity($prefix, $id);
     }
 
     public function getEntityWithCache(int $id): mixed

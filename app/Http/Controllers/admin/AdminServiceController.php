@@ -93,12 +93,15 @@ class AdminServiceController extends Controller
      */
     public function index(Request $request)
     {
-        $serviceList = $this->serviceService->getListWithCache($request['category_id']);
+        $categoryId = $request->input('category_id');
+        $categoryId = is_numeric($categoryId) ? (int)$categoryId : null;
+        $servicesWithCache = $this->serviceService->getListWithCache($categoryId);
+
 
         return response()->json([
             'status' => 'success',
             'message' => 'Список услуг',
-            'data' => ServiceResource::collection($serviceList)
+            'data' => ServiceResource::collection($servicesWithCache)
         ]);
     }
 

@@ -72,7 +72,9 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
-        $servicesWithCache = $this->serviceService->getListWithCache($request->input('category_id'));
+        $categoryId = $request->input('category_id');
+        $categoryId = is_numeric($categoryId) ? (int)$categoryId : null;
+        $servicesWithCache = $this->serviceService->getListWithCache($categoryId);
 
         return response()->json([
             'status' => 'success',

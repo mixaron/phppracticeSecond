@@ -26,9 +26,9 @@ class ServiceRepository
         return Service::findOrFail($id);
     }
 
-    public function update($currentService): Service
+    public function update($currentService): void
     {
-        return $currentService->save();
+        $currentService->save();
     }
 
     public function deleteById(string $id): void
