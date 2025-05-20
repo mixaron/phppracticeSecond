@@ -57,12 +57,12 @@ class ServiceCategoryController extends Controller
      */
     public function index()
     {
-        $newsList = $this->serviceCategoryService->getAllServiceCategory();
+        $categories = $this->serviceCategoryService->getListWithCache(null);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Список категорий услуг',
-            'data' => ServiceCategoryResource::collection($newsList)
+            'data' => ServiceCategoryResource::collection($categories)
         ]);
     }
 
@@ -123,7 +123,7 @@ class ServiceCategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $news = $this->serviceCategoryService->getServiceCategoryById($id);
+            $news = $this->serviceCategoryService->getEntityWithCache($id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',

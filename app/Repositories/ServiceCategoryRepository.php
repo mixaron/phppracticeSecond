@@ -16,9 +16,9 @@ class ServiceCategoryRepository
         return ServiceCategory::all();
     }
 
-    public function save(array $data): void
+    public function save(array $data): ServiceCategory
     {
-        ServiceCategory::create($data);
+        return ServiceCategory::create($data);
     }
 
     public function getById(string $id): ServiceCategory
@@ -28,7 +28,7 @@ class ServiceCategoryRepository
 
     public function update($NewsCategory): void
     {
-        ServiceCategory::save($NewsCategory);
+        $NewsCategory->save();
     }
 
     public function deleteById(string $id): void
