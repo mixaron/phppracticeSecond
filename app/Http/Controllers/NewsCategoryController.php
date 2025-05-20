@@ -57,7 +57,7 @@ class NewsCategoryController extends Controller
      */
     public function index()
     {
-        $newsList = $this->newsCategoryService->getAllNewsCategory();
+        $newsList = $this->newsCategoryService->getEntityWithCache(null);
 
         return response()->json([
             'status' => 'success',
@@ -123,7 +123,7 @@ class NewsCategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $news = $this->newsCategoryService->getNewsCategoryById($id);
+            $news = $this->newsCategoryService->getEntityWithCache($id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',

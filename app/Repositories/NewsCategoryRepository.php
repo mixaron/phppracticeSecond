@@ -16,9 +16,9 @@ class NewsCategoryRepository
         return NewsCategory::all();
     }
 
-    public function save(array $data): void
+    public function save(array $data): NewsCategory
     {
-        NewsCategory::create($data);
+        return NewsCategory::create($data);
     }
 
     public function getById(string $id): NewsCategory
@@ -26,9 +26,9 @@ class NewsCategoryRepository
         return NewsCategory::findOrFail($id);
     }
 
-    public function update($NewsCategory): void
+    public function update($newsCategory): void
     {
-        NewsCategory::save($NewsCategory);
+        $newsCategory->save();
     }
 
     public function deleteById(string $id): void

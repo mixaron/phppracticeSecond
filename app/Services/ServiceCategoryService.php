@@ -11,6 +11,7 @@ class ServiceCategoryService implements CacheableServiceInterface
 {
     private ServiceCategoryRepository $serviceCategoryRepository;
     private CacheService $cacheService;
+
     private const CACHE_LIST_PREFIX = 'service_categories';
     private const CACHE_ENTITY_PREFIX = 'service_categories_entity';
 
@@ -41,7 +42,7 @@ class ServiceCategoryService implements CacheableServiceInterface
     public function deleteServiceCategoryById(string $id): void
     {
         $category = $this->serviceCategoryRepository->getById($id);
-        
+
         $this->clearCache($category->id, self::CACHE_LIST_PREFIX);
         $this->clearEntityCache(self::CACHE_ENTITY_PREFIX, $category->id);
 

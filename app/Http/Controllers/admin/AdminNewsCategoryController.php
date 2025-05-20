@@ -70,12 +70,85 @@ class AdminNewsCategoryController extends Controller
      */
     public function index()
     {
-        $newsList = $this->newsCategoryService->getAllNewsCategory();
+        $newsList = $this->newsCategoryService->getListWithCache(null);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Список категорий новостей',
             'data' => NewsCategoryResource::collection($newsList)
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/news-categories/{id}",
+     *     tags={"News-Categories"},
+     *     summary="Получить категорию новостей по идентификатору",
+     *     operationId="getNewsCategoryById",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Идентификатор категории новостей",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Категория новостей",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"success"}, example="success", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Категория новости по id", description="Сообщение о результате запроса"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Данные категории новостей",
+     *                 @OA\Property(property="id", type="string", description="Уникальный идентификатор категории новостей"),
+     *                 @OA\Property(property="title", type="string", description="Название категории новостей"),
+     *                 @OA\Property(property="description", type="string", description="Описание категории новостей"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания в формате ISO 8601"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления в формате ISO 8601")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Категория новостей не найдена",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Категория новости не найдена", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Внутренняя ошибка сервера",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", enum={"error"}, example="error", description="Статус запроса"),
+     *             @OA\Property(property="message", type="string", example="Произошла непредвиденная ошибка", description="Сообщение об ошибке"),
+     *             @OA\Property(property="data", type="null", example=null, description="Данные (отсутствуют при ошибке)")
+     *         )
+     *     )
+     * )
+     */
+    public function show(string $id)
+    {
+        try {
+            $news = $this->newsCategoryService->getEntityWithCache($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Категория новостей не найдена',
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Категория новостей по id',
+            'data' => new NewsCategoryResource($news)
         ]);
     }
 
