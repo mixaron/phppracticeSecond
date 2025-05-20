@@ -84,7 +84,7 @@ class AdminContactsController extends Controller
     public function index()
     {
         try {
-            $footer = $this->contactsService->getContacts();
+            $footer = $this->contactsService->getEntityWithCache(1);
         } catch (ModelNotFoundException $exception) {
             return response()->json([
                 'status' => 'error',

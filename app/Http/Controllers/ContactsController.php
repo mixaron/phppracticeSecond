@@ -73,7 +73,7 @@ class ContactsController extends Controller
     public function index()
     {
         try {
-            $footer = $this->contactsService->getContacts();
+            $footer = $this->contactsService->getEntityWithCache(1);
         } catch (ModelNotFoundException $exception) {
             return response()->json([
                 'status' => 'error',
@@ -84,7 +84,7 @@ class ContactsController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Контакты',
-            'data' => ContactsResource::collection($footer)
+            'data' => new ContactsResource($footer)
         ]);
     }
 }
