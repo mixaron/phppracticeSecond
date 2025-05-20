@@ -26,7 +26,7 @@ class ServiceService implements CacheableServiceInterface
     public function addService(array $data): Service
     {
         $service =  $this->serviceRepository->saveService($data);
-        $this->clearCache(null, self::CACHE_LIST_PREFIX);
+        $this->clearCache($service->category_id, self::CACHE_LIST_PREFIX);
         return $service;
     }
 

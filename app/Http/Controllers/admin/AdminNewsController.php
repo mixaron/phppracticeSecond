@@ -99,12 +99,14 @@ class AdminNewsController extends Controller
      */
     public function index(Request $request)
     {
-        $news = $this->newsService->getListWithCache($request->input('category_id'));
+        $categoryId = $request->input('category_id');
+        $categoryId = is_numeric($categoryId) ? (int)$categoryId : null;
+        $newsWithCache = $this->newsService->getListWithCache($categoryId);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Список новостей',
-            'data' => NewsResource::collection($news)
+            'data' => NewsResource::collection($newsWithCache)
         ]);
     }
 

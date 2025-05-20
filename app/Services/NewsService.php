@@ -25,18 +25,19 @@ class NewsService implements CacheableServiceInterface
 
     public function addNews(array $data): News
     {
-        $this->clearCache($data['category_id'] ?? null, self::CACHE_LIST_PREFIX);
-        return $this->newsRepository->saveNews($data);
+        $news =  $this->newsRepository->saveNews($data);
+        $this->clearCache($news->category_id, self::CACHE_LIST_PREFIX);
+        return $news;
     }
 
     public function updateNews(array $data, string $id): News
     {
         $currentNews = News::findOrFail($id);
+        $this->clearCache($currentNews->category_id, self::CACHE_LIST_PREFIX);
+        $this->clearEntityCache( self::CACHE_ENTITY_PREFIX, $currentNews->id);
+
         $currentNews->fill($data);
         $this->newsRepository->update($currentNews);
-
-        $this->clearCache($data['category_id'] ?? null, self::CACHE_LIST_PREFIX);
-        $this->clearCache(null, "news_entity_{$currentNews->id}");
 
 
         return $currentNews;
@@ -47,7 +48,7 @@ class NewsService implements CacheableServiceInterface
         $news = $this->newsRepository->getById($id);
 
         $this->clearCache($news->category_id, self::CACHE_LIST_PREFIX);
-        $this->clearCache(null, "news_entity_{$news->id}");
+        $this->clearEntityCache(self::CACHE_ENTITY_PREFIX, $news->id);
 
         $this->imageService->deleteImages($news);
         $this->newsRepository->deleteById($id);
@@ -61,11 +62,11 @@ class NewsService implements CacheableServiceInterface
     public function getListWithCache(?int $categoryId): Collection
     {
         return $this->cacheService->rememberByCategory(
-            'news_list',
+            self::CACHE_LIST_PREFIX,
             $categoryId,
             10,
             function () use ($categoryId) {
-                return $categoryId
+                return $categoryId !== null
                     ? $this->newsRepository->findAllNewsByCategoryId($categoryId)
                     : $this->newsRepository->findAllNews();
             }
@@ -75,6 +76,11 @@ class NewsService implements CacheableServiceInterface
     public function clearCache(mixed $categoryId, string $prefix): void
     {
         $this->cacheService->clearByCategory($prefix, $categoryId);
+    }
+
+    public function clearEntityCache(string $prefix, int $id): Void
+    {
+        $this->cacheService->clearEntity($prefix, $id);
     }
 
     public function getEntityWithCache(int $id): mixed
