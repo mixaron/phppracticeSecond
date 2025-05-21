@@ -16,9 +16,9 @@ class ReviewRepository
         return Review::all();
     }
 
-    public function create(array $data): void
+    public function create(array $data): Review
     {
-        Review::create($data);
+        return Review::create($data);
     }
 
     public function getById(string $id): Review
@@ -43,8 +43,13 @@ class ReviewRepository
 
     public function getAllByUserId(string $userId): Collection
     {
-        return Review::where('user_id', $userId)->get();
+        return Review::whereIn('request_id', function ($query) use ($userId) {
+            $query->select('id')
+                ->from('requests')
+                ->where('user_id', $userId);
+        })->get();
     }
+
 
     public function getAllByServiceId(string $serviceId): Collection
     {

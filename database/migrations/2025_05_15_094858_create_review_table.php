@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('description')->nullable(false);
             $table->integer('estimation')->nullable(false);
             $table->enum('status',
-                ['on_moderation', 'cancelled', 'rejected'])->default('on_moderation');
+                ['on_moderation', 'cancelled', 'allowed'])->default('on_moderation');
             $table->foreignId('request_id')->constrained('requests')->onDelete('cascade');
             $table->timestamps();
         });

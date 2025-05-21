@@ -82,7 +82,7 @@ class AdminReviewController extends Controller
      */
     public function index()
     {
-        $reviews = $this->reviewService->getAllReviews();
+        $reviews = $this->reviewService->getListWithCache(null);
 
         return response()->json([
             'status' => 'success',
@@ -174,7 +174,7 @@ class AdminReviewController extends Controller
     public function changeReviewStatus(string $id, Request $request)
     {
         $request->validate([
-            'status' => 'required|string|in:cancelled,rejected'
+            'status' => 'required|string|in:cancelled,allowed'
         ]);
 
         $status = "success";

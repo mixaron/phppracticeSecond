@@ -76,11 +76,11 @@ class UserReviewController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->query('user_id') === true) {
+        if ($request->query('user_id') === 'true') {
             $allReviews = $this->reviewService->getAllReviewByUserId(auth()->id());
             $message = 'Список отзывов пользователя';
         } else {
-            $allReviews = $this->reviewService->getAllReviews();
+            $allReviews = $this->reviewService->getListWithCache(null);
             $message = 'Список отзывов';
         }
 
@@ -157,7 +157,7 @@ class UserReviewController extends Controller
     public function show(string $id)
     {
         try {
-            $review = $this->reviewService->getReviewById($id);
+            $review = $this->reviewService->getEntityWithCache($id);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',

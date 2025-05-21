@@ -11,15 +11,15 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 class ReviewService
 {
     private ReviewRepository $reviewRepository;
+    private CacheService $cacheService;
 
-    public function __construct(ReviewRepository $reviewRepository)
+    private const CACHE_LIST_PREFIX = 'reviews_list';
+    private const CACHE_ENTITY_PREFIX = 'reviews_entity';
+
+    public function __construct(ReviewRepository $reviewRepository, CacheService $cacheService)
     {
         $this->reviewRepository = $reviewRepository;
-    }
-
-    public function getAllReviews(): Collection
-    {
-        return $this->reviewRepository->findAll();
+        $this->cacheService = $cacheService;
     }
 
     public function addReview(array $data): void
@@ -30,7 +30,12 @@ class ReviewService
 
         if ($request->user_id != auth()->id()) throw new BadRequestException("Пользователь не пользовался услугой");
         if ($request->review()->exists()) throw new BadRequestException("Отзыв уже оставлен");
-        $this->reviewRepository->create($data);
+
+
+        $review = $this->reviewRepository->create($data);
+
+        $this->clearCache($review->service_id, self::CACHE_LIST_PREFIX);
+
     }
 
     public function getReviewById(string $id): Review
@@ -44,6 +49,10 @@ class ReviewService
         $request = UserRequest::findOrFail($data['request_id']);
         if ($request->user_id != auth()->id()) throw new BadRequestException("Пользователь не пользовался услугой");
         if ($currentReview->status != 'new') throw new BadRequestException("Отзыв уже утвержден");
+
+        $this->clearCache($currentReview->category_id, self::CACHE_LIST_PREFIX);
+        $this->clearEntityCache(self::CACHE_ENTITY_PREFIX, $currentReview->id);
+
         $currentReview->fill($data);
 
         $this->reviewRepository->update($currentReview);
@@ -54,6 +63,10 @@ class ReviewService
         $userId = auth()->id();
         $review = Review::findOrFail($id);
         if ($review->user->id != $userId) throw new BadRequestException("Пользователь не владеет этим отзывом");
+
+        $this->clearCache($review->category_id, self::CACHE_LIST_PREFIX);
+        $this->clearEntityCache(self::CACHE_ENTITY_PREFIX, $review->id);
+
         $this->reviewRepository->deleteById($id);
     }
 
@@ -76,5 +89,41 @@ class ReviewService
     {
         $review = $this->reviewRepository->getById($id);
         $review->status = $input;
+        $review->save();
+
+        $this->clearCache($review->category_id, self::CACHE_LIST_PREFIX);
+        $this->clearEntityCache(self::CACHE_ENTITY_PREFIX, $review->id);
+
+    }
+
+    public function getListWithCache(?int $categoryId): Collection
+    {
+        return $this->cacheService->rememberByCategory(
+            self::CACHE_LIST_PREFIX,
+            $categoryId,
+            10,
+            function () use ($categoryId) {
+                return $categoryId !== null
+                    ? $this->reviewRepository->getAllByServiceId($categoryId)
+                    : $this->reviewRepository->findAll();
+            }
+        );
+    }
+
+    public function clearCache(mixed $categoryId, string $prefix): void
+    {
+        $this->cacheService->clearByCategory($prefix, $categoryId);
+    }
+
+    public function clearEntityCache(string $prefix, int $id): Void
+    {
+        $this->cacheService->clearEntity($prefix, $id);
+    }
+
+    public function getEntityWithCache(int $id): mixed
+    {
+        return $this->cacheService->rememberById(self::CACHE_ENTITY_PREFIX, $id, 10, function () use ($id) {
+            return $this->reviewRepository->getById($id);
+        });
     }
 }

@@ -21,8 +21,8 @@ class ReviewResource extends JsonResource
             'status' => $this->status,
             'request' => [
                 'id' => $this->request->id,
-                'user_id' => $this->request->title,
-                'service_id' => $this->request->title,
+                'user_id' => $this->request->user_id,
+                'service_id' => $this->request->service_id,
             ],
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String()
