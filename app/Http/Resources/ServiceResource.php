@@ -19,6 +19,7 @@ class ServiceResource extends JsonResource
                 'id' => $this->serviceCategory->id,
                 'title' => $this->serviceCategory->title,
             ],
+            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'images' => $this->images->map(fn($img) => asset('storage/' . $img->path)),
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String()

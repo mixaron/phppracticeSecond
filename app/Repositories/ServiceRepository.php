@@ -23,7 +23,7 @@ class ServiceRepository
 
     public function getById(string $id): Service
     {
-        return Service::findOrFail($id);
+        return Service::with('reviews')->findOrFail($id);
     }
 
     public function update($currentService): void
