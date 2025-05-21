@@ -7,8 +7,8 @@
     },
     "servers": [
         {
-            "url": "http://localhost/api",
-            "description": "Локальный сервер"
+            "url": "https:phppracticesecond-production.up.railway.app/api",
+            "description": "прод сервер"
         },
         {
             "url": "https://phppracticesecond-production.up.railway.app"
@@ -1131,7 +1131,6 @@
                                 "schema": {
                                     "properties": {
                                         "status": {
-                                            "description": "Статус запроса",
                                             "type": "string",
                                             "enum": [
                                                 "success"
@@ -1139,39 +1138,85 @@
                                             "example": "success"
                                         },
                                         "message": {
-                                            "description": "Сообщение о результате запроса",
                                             "type": "string",
                                             "example": "Услуга по id"
                                         },
                                         "data": {
-                                            "description": "Данные услуги",
                                             "properties": {
                                                 "id": {
                                                     "description": "Уникальный идентификатор услуги",
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "example": "1"
                                                 },
                                                 "title": {
                                                     "description": "Название услуги",
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "example": "Создание сайта"
                                                 },
                                                 "description": {
                                                     "description": "Описание услуги",
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "example": "Полноценная разработка под ключ"
                                                 },
                                                 "price": {
                                                     "description": "Стоимость услуги",
                                                     "type": "number",
-                                                    "format": "float"
+                                                    "format": "float",
+                                                    "example": 15000
                                                 },
                                                 "created_at": {
-                                                    "description": "Дата и время создания в формате ISO 8601",
                                                     "type": "string",
-                                                    "format": "date-time"
+                                                    "format": "date-time",
+                                                    "example": "2025-05-21T14:00:00Z"
                                                 },
                                                 "updated_at": {
-                                                    "description": "Дата и время последнего обновления в формате ISO 8601",
                                                     "type": "string",
-                                                    "format": "date-time"
+                                                    "format": "date-time",
+                                                    "example": "2025-05-21T14:00:00Z"
+                                                },
+                                                "reviews": {
+                                                    "description": "Отзывы к услуге",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "ID отзыва",
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "user_id": {
+                                                                "description": "ID пользователя, оставившего отзыв",
+                                                                "type": "integer",
+                                                                "example": 5
+                                                            },
+                                                            "rating": {
+                                                                "description": "Оценка отзыва",
+                                                                "type": "integer",
+                                                                "example": 4
+                                                            },
+                                                            "text": {
+                                                                "description": "Текст отзыва",
+                                                                "type": "string",
+                                                                "example": "Очень доволен работой"
+                                                            },
+                                                            "status": {
+                                                                "description": "Статус модерации отзыва",
+                                                                "type": "string",
+                                                                "example": "allowed"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2025-05-20T10:00:00Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2025-05-20T10:00:00Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -1189,7 +1234,6 @@
                                 "schema": {
                                     "properties": {
                                         "status": {
-                                            "description": "Статус запроса",
                                             "type": "string",
                                             "enum": [
                                                 "error"
@@ -1197,12 +1241,10 @@
                                             "example": "error"
                                         },
                                         "message": {
-                                            "description": "Сообщение об ошибке",
                                             "type": "string",
                                             "example": "Услуга не найдена"
                                         },
                                         "data": {
-                                            "description": "Данные (отсутствуют при ошибке)",
                                             "type": "null",
                                             "example": null
                                         }
@@ -1219,7 +1261,6 @@
                                 "schema": {
                                     "properties": {
                                         "status": {
-                                            "description": "Статус запроса",
                                             "type": "string",
                                             "enum": [
                                                 "error"
@@ -1227,12 +1268,10 @@
                                             "example": "error"
                                         },
                                         "message": {
-                                            "description": "Сообщение об ошибке",
                                             "type": "string",
                                             "example": "Произошла непредвиденная ошибка"
                                         },
                                         "data": {
-                                            "description": "Данные (отсутствуют при ошибке)",
                                             "type": "null",
                                             "example": null
                                         }
@@ -1889,7 +1928,7 @@
                 ]
             }
         },
-        "/api/requests": {
+        "/api/user/requests": {
             "get": {
                 "tags": [
                     "Requests"
@@ -2189,7 +2228,7 @@
                 ]
             }
         },
-        "/api/requests/{id}": {
+        "/api/user/requests/{id}": {
             "get": {
                 "tags": [
                     "Requests"
@@ -4578,6 +4617,139 @@
             }
         },
         "/api/admin/news-categories/{id}": {
+            "get": {
+                "tags": [
+                    "News-Categories"
+                ],
+                "summary": "Получить категорию новостей по идентификатору",
+                "operationId": "getNewsCategoryByIdAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор категории новостей",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Категория новостей",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Категория новости по id"
+                                        },
+                                        "data": {
+                                            "description": "Данные категории новостей",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Уникальный идентификатор категории новостей",
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "description": "Название категории новостей",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "description": "Описание категории новостей",
+                                                    "type": "string"
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата и время создания в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория новостей не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Категория новости не найдена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "Admin/News-Categories"
@@ -6662,6 +6834,139 @@
             }
         },
         "/api/admin/service-categories/{id}": {
+            "get": {
+                "tags": [
+                    "Service-Categories"
+                ],
+                "summary": "Получить категорию услуг по идентификатору",
+                "operationId": "getServiceCategoryByIdAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор категории услуг",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Категория услуг",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Категория новости по id"
+                                        },
+                                        "data": {
+                                            "description": "Данные категории услуг",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Уникальный идентификатор категории услуг",
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "description": "Название категории услуг",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "description": "Описание категории услуг",
+                                                    "type": "string"
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата и время создания в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория услуги не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Категория новости не найдена"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "Admin/Service-Categories"

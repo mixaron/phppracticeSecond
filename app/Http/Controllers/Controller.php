@@ -9,8 +9,8 @@ namespace App\Http\Controllers;
  *         description="Документация для API практики"
  *     ),
  *     @OA\Server(
- *         url="http://localhost/api",
- *         description="Локальный сервер"
+ *         url="https:phppracticesecond-production.up.railway.app/api",
+ *         description="прод сервер"
  *     )
  * )
  */

@@ -81,10 +81,10 @@ class AdminServiceCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/service-categories/{id}",
+     *     path="/api/admin/service-categories/{id}",
      *     tags={"Service-Categories"},
      *     summary="Получить категорию услуг по идентификатору",
-     *     operationId="getServiceCategoryById",
+     *     operationId="getServiceCategoryByIdAdmin",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

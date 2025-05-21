@@ -81,10 +81,10 @@ class AdminNewsCategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/news-categories/{id}",
+     *     path="/api/admin/news-categories/{id}",
      *     tags={"News-Categories"},
      *     summary="Получить категорию новостей по идентификатору",
-     *     operationId="getNewsCategoryById",
+     *     operationId="getNewsCategoryByIdAdmin",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

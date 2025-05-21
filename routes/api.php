@@ -24,7 +24,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/contacts', [ContactsController::class, 'index']);
 Route::apiResource('/news-categories', NewsCategoryController::class);
 Route::apiResource('/news', NewsController::class);
-Route::apiResource('/services-categories', ServiceCategoryController::class);
+Route::apiResource('/service-categories', ServiceCategoryController::class);
 Route::apiResource('/services', ServiceController::class);
 
 Route::middleware('auth:api')->prefix('user')->group(function () {
@@ -60,14 +60,7 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     Route::patch('/reviews/{id}/status', [AdminReviewController::class, 'changeReviewStatus']);
 });
 
-// добавить изменение пароля
-// создать сущность, миграцию, запрос, ответ, применить миграцию, создать репо, сервис, контроллер,
 
-// todo создать акции, фотки, сделать админку, добавить изменение пароля
-// todo решить проблему с заявкой и несуществующей услугой
-// todo ДОКУМЕНТАЦИЯ таблица компании, отзывы,
-// доделать админку для отзывов, проверить, закешировать данные, которые будут передаваться часто и не уникальные для определенного пользователя
-// валидировать аутентификацию
-
-// нельзя передавать form data в метод patch, переделать новости под фото тоже, чтобы удалить сервис надо удалить фото,
-// чтобы удалить фото надо удалить из бд + из папки проекта
+// поменять документацию у методов newsC serviceC index
+// проверить кеш отзывов, добавить фильтр в отзывах по услугам, обновить документацию отзывов, добавить метод чтобы выводить отзывы по услугам
+// чтобы работали картинки надо прописать php artisan storage:link
