@@ -19,7 +19,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/requests",
+     *     path="/api/user/requests",
      *     tags={"Requests"},
      *     summary="Получить список всех заявок пользователя",
      *     operationId="getAllUserRequests",
@@ -97,7 +97,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/requests",
+     *     path="/api/user/requests",
      *     tags={"Requests"},
      *     summary="Создать новую заявку",
      *     operationId="createUserRequest",
@@ -248,15 +248,15 @@ class UserRequestController extends Controller
         }
 
         return response()->json([
-            $status,
-            $message,
+            'status' => $status,
+            'message' => $message,
             'data' => null
         ], $code);
     }
 
     /**
      * @OA\Get(
-     *     path="/api/requests/{id}",
+     *     path="/api/user/requests/{id}",
      *     tags={"Requests"},
      *     summary="Получить заявку пользователя по идентификатору",
      *     operationId="getUserRequestById",
@@ -357,7 +357,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/requests/{id}",
+     *     path="/api/user/requests/{id}",
      *     tags={"Requests"},
      *     summary="Обновить заявку пользователя по идентификатору",
      *     operationId="updateUserRequest",
@@ -494,7 +494,7 @@ class UserRequestController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/requests/{id}",
+     *     path="/api/user/requests/{id}",
      *     tags={"Requests"},
      *     summary="Удалить заявку пользователя по идентификатору",
      *     operationId="deleteUserRequest",
