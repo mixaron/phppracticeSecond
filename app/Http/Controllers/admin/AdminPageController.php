@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Domains\User\Resources\UserResource;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Services\NewsService;
 use App\Services\ReviewService;
 use App\Services\ServiceService;

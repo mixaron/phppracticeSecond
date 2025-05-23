@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Domains\User\Resources\UserRequestResource;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserRequestResource;
 use App\Services\RequestService;
 use Illuminate\Http\Request;
 

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Domains\Service\Resources\ServiceResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
-use App\Http\Resources\ServiceResource;
 use App\Services\ImageService;
 use App\Services\ServiceService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

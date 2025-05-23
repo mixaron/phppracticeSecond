@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Domains\Service\Models\Service;
+use App\Domains\Service\Repositories\ServiceRepository;
 use App\Http\CacheableServiceInterface;
-use App\Models\Service;
-use App\Repositories\ServiceRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 class ServiceService implements CacheableServiceInterface

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Domains\NewsCategory\Models\NewsCategory;
+use App\Domains\NewsCategory\Repositories\NewsCategoryRepository;
 use App\Http\CacheableServiceInterface;
-use App\Models\NewsCategory;
-use App\Repositories\NewsCategoryRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 class NewsCategoryService implements CacheableServiceInterface

@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Service;
-use App\Models\User;
-use App\Models\UserRequest;
-use App\Repositories\UserRequestRepository;
+use App\Domains\Service\Models\Service;
+use App\Domains\User\Models\User;
+use App\Domains\User\Models\UserRequest;
+use App\Domains\User\Repositories\UserRequestRepository;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 

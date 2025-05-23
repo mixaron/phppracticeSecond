@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Domains\News\Resources\NewsResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NewsRequest;
-use App\Http\Resources\NewsResource;
 use App\Services\ImageService;
 use App\Services\NewsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

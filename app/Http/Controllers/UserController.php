@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Domains\User\Resources\UserResource;
 use App\Http\Requests\UserRequest;
-use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;

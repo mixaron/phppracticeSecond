@@ -2,8 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Requests\UserRequestRequest;
-use App\Repositories\UserRequestRepository;
+use App\Domains\User\Repositories\UserRequestRepository;
 use Illuminate\Support\Collection;
 
 class RequestService
@@ -21,7 +20,7 @@ class RequestService
         return $this->userRequestRepository->findAllRequests();
     }
 
-    public function changeStatus(int $id, mixed $status): \App\Models\UserRequest
+    public function changeStatus(int $id, mixed $status): \App\Domains\User\Models\UserRequest
     {
         $request = $this->userRequestRepository->findRequestById($id);
         $request->status = $status;

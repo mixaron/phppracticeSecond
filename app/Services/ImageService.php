@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\News;
-use App\Models\Service;
+use App\Domains\News\Models\News;
+use App\Domains\Service\Models\Service;
 use Illuminate\Support\Facades\Storage;
 
 class ImageService

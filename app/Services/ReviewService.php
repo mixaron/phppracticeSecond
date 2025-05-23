@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Review;
-use App\Models\UserRequest;
-use App\Repositories\ReviewRepository;
+use App\Domains\Review\Models\Review;
+use App\Domains\Review\Repositories\ReviewRepository;
+use App\Domains\User\Models\UserRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 

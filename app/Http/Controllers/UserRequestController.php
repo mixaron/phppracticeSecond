@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Domains\User\Resources\UserRequestResource;
 use App\Http\Requests\UserRequestRequest;
-use App\Http\Resources\UserRequestResource;
 use App\Services\UserRequestService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;

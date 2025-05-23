@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Domains\News\Models\News;
+use App\Domains\News\Repositories\NewsRepository;
 use App\Http\CacheableServiceInterface;
-use App\Models\News;
-use App\Repositories\NewsRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 class NewsService implements CacheableServiceInterface

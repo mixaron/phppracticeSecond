@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ContactsResource;
+use App\Domains\Contacts\Resources\ContactsResource;
 use App\Services\ContactsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

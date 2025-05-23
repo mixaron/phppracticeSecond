@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Domains\Review\Resources\ReviewResource;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ReviewResource;
 use App\Services\ReviewService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;

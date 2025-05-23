@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Resources\NewsCategoryResource;
+use App\Domains\NewsCategory\Resources\NewsCategoryResource;
 use App\Services\NewsCategoryService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

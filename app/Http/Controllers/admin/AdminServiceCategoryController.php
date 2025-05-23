@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Domains\ServiceCategory\Resources\ServiceCategoryResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceCategoryRequest;
-use App\Http\Resources\ServiceCategoryResource;
 use App\Services\ServiceCategoryService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Domains\Contacts\Models\Contacts;
+use App\Domains\Contacts\Repositories\ContactsRepository;
 use App\Http\CacheableServiceInterface;
-use App\Models\Contacts;
-use App\Repositories\ContactsRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 class ContactsService implements CacheableServiceInterface

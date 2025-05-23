@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Domains\ServiceCategory\Models\ServiceCategory;
+use App\Domains\ServiceCategory\Repositories\ServiceCategoryRepository;
 use App\Http\CacheableServiceInterface;
-use App\Models\ServiceCategory;
-use App\Repositories\ServiceCategoryRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 class ServiceCategoryService implements CacheableServiceInterface

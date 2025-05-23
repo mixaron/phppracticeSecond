@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Domains\Contacts\Resources\ContactsResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactsRequest;
-use App\Http\Resources\ContactsResource;
 use App\Services\ContactsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
 class AdminContactsController extends Controller
 {
