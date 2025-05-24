@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Domains\News\Models\News;
 use App\Domains\Service\Models\Service;
+use App\Domains\Worker\Models\Worker;
 use Illuminate\Support\Facades\Storage;
 
 class ImageService
@@ -12,7 +13,7 @@ class ImageService
     {
     }
 
-    public function addImages(array $images, Service|News $model): void
+    public function addImages(array $images, Service|News|Worker $model): void
     {
         foreach ($images as $file) {
             $path = $file->store('uploads', 'public');
@@ -20,7 +21,7 @@ class ImageService
         }
     }
 
-    public function updateImages(array $images, Service|News $model): void
+    public function updateImages(array $images, Service|News|Worker $model): void
     {
         $this->deleteImages($model);
 
@@ -31,7 +32,7 @@ class ImageService
         }
     }
 
-    public function deleteImages(Service|News $model): void
+    public function deleteImages(Service|News|Worker $model): void
     {
         foreach ($model->images as $image) {
             Storage::disk('public')->delete($image->path);

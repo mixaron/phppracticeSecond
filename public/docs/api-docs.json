@@ -3724,6 +3724,246 @@
                 ]
             }
         },
+        "/api/workers": {
+            "get": {
+                "tags": [
+                    "Workers"
+                ],
+                "summary": "Получить список всех специалистов",
+                "operationId": "getAllWorkers",
+                "responses": {
+                    "200": {
+                        "description": "Список всех специалистов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус ответа",
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате",
+                                            "type": "string",
+                                            "example": "Список специалистов"
+                                        },
+                                        "data": {
+                                            "description": "Список специалистов",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "ID специалиста",
+                                                        "type": "integer"
+                                                    },
+                                                    "firstname": {
+                                                        "description": "Имя специалиста",
+                                                        "type": "string"
+                                                    },
+                                                    "lastname": {
+                                                        "description": "Фамилия специалиста",
+                                                        "type": "string"
+                                                    },
+                                                    "age": {
+                                                        "description": "Возраст специалиста",
+                                                        "type": "integer"
+                                                    },
+                                                    "description": {
+                                                        "description": "Описание специалиста",
+                                                        "type": "string"
+                                                    },
+                                                    "images": {
+                                                        "description": "Список изображений",
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "format": "uri",
+                                                            "example": "http://example.com/storage/image.jpg"
+                                                        }
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата создания",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата обновления",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/workers/{id}": {
+            "get": {
+                "tags": [
+                    "Workers"
+                ],
+                "summary": "Получить специалиста по ID",
+                "operationId": "getWorkerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID специалиста",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные одного специалиста",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Специалист по id"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID специалиста",
+                                                    "type": "integer"
+                                                },
+                                                "firstname": {
+                                                    "description": "Имя",
+                                                    "type": "string"
+                                                },
+                                                "lastname": {
+                                                    "description": "Фамилия",
+                                                    "type": "string"
+                                                },
+                                                "age": {
+                                                    "description": "Возраст",
+                                                    "type": "integer"
+                                                },
+                                                "description": {
+                                                    "description": "Описание",
+                                                    "type": "string"
+                                                },
+                                                "images": {
+                                                    "description": "Список изображений",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "format": "uri",
+                                                        "example": "http://example.com/storage/image.jpg"
+                                                    }
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата создания",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата обновления",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Специалист не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Специалист не найден"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/admin/contacts": {
             "get": {
                 "tags": [
@@ -8508,6 +8748,772 @@
                     }
                 ]
             }
+        },
+        "/api/admin/workers": {
+            "get": {
+                "tags": [
+                    "Admin/Workers"
+                ],
+                "summary": "Получить список всех работников",
+                "operationId": "getAllWorkersAdmin",
+                "responses": {
+                    "200": {
+                        "description": "Список работников",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Список работников"
+                                        },
+                                        "data": {
+                                            "description": "Массив работников",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Уникальный идентификатор работника",
+                                                        "type": "string"
+                                                    },
+                                                    "firstname": {
+                                                        "description": "Имя работника",
+                                                        "type": "string",
+                                                        "example": "Иван"
+                                                    },
+                                                    "lastname": {
+                                                        "description": "Фамилия работника",
+                                                        "type": "string",
+                                                        "example": "Иванов"
+                                                    },
+                                                    "age": {
+                                                        "description": "Возраст работника",
+                                                        "type": "integer",
+                                                        "example": 30
+                                                    },
+                                                    "description": {
+                                                        "description": "Описание работника",
+                                                        "type": "string",
+                                                        "example": "Опытный специалист"
+                                                    },
+                                                    "images": {
+                                                        "description": "Список URL изображений работника",
+                                                        "type": "array",
+                                                        "items": {
+                                                            "description": "URL изображения",
+                                                            "type": "string",
+                                                            "format": "url",
+                                                            "example": "https://example.com/storage/images/worker.jpg"
+                                                        }
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата и время создания в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin/Workers"
+                ],
+                "summary": "Создать нового работника",
+                "operationId": "createWorkerAdmin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "firstname",
+                                    "lastname",
+                                    "age",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "firstname": {
+                                        "description": "Имя работника",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Иван"
+                                    },
+                                    "lastname": {
+                                        "description": "Фамилия работника",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Иванов"
+                                    },
+                                    "age": {
+                                        "description": "Возраст работника",
+                                        "type": "integer",
+                                        "maximum": 99,
+                                        "minimum": 18,
+                                        "example": 30
+                                    },
+                                    "description": {
+                                        "description": "Описание работника",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Опытный специалист"
+                                    },
+                                    "images": {
+                                        "description": "Массив изображений для работника",
+                                        "type": "array",
+                                        "items": {
+                                            "description": "Изображение в формате jpg, jpeg, png или webp (макс. 2MB)",
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Работник создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "created"
+                                            ],
+                                            "example": "created"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Работник создан"
+                                        },
+                                        "data": {
+                                            "description": "Созданный работник",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Уникальный идентификатор работника",
+                                                    "type": "string"
+                                                },
+                                                "firstname": {
+                                                    "description": "Имя работника",
+                                                    "type": "string",
+                                                    "example": "Иван"
+                                                },
+                                                "lastname": {
+                                                    "description": "Фамилия работника",
+                                                    "type": "string",
+                                                    "example": "Иванов"
+                                                },
+                                                "age": {
+                                                    "description": "Возраст работника",
+                                                    "type": "integer",
+                                                    "example": 30
+                                                },
+                                                "description": {
+                                                    "description": "Описание работника",
+                                                    "type": "string",
+                                                    "example": "Опытный специалист"
+                                                },
+                                                "images": {
+                                                    "description": "Список URL изображений работника",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "description": "URL изображения",
+                                                        "type": "string",
+                                                        "format": "url",
+                                                        "example": "https://example.com/storage/images/worker.jpg"
+                                                    }
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата и время создания в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/workers/{id}": {
+            "post": {
+                "tags": [
+                    "Admin/Workers"
+                ],
+                "summary": "Обновить работника по идентификатору",
+                "operationId": "updateWorkerAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор работника",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "firstname",
+                                    "lastname",
+                                    "age",
+                                    "description",
+                                    "_method"
+                                ],
+                                "properties": {
+                                    "_method": {
+                                        "description": "Метод HTTP для эмуляции PATCH",
+                                        "type": "string",
+                                        "enum": [
+                                            "PATCH"
+                                        ],
+                                        "example": "PATCH"
+                                    },
+                                    "firstname": {
+                                        "description": "Имя работника",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Иван"
+                                    },
+                                    "lastname": {
+                                        "description": "Фамилия работника",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Иванов"
+                                    },
+                                    "age": {
+                                        "description": "Возраст работника",
+                                        "type": "integer",
+                                        "maximum": 99,
+                                        "minimum": 18,
+                                        "example": 30
+                                    },
+                                    "description": {
+                                        "description": "Описание работника",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Опытный специалист"
+                                    },
+                                    "images": {
+                                        "description": "Массив изображений для работника",
+                                        "type": "array",
+                                        "items": {
+                                            "description": "Изображение в формате jpg, jpeg, png или webp (макс. 2MB)",
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Работник обновлён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "updated"
+                                            ],
+                                            "example": "updated"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Работник обновлён"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после обновления)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Работник не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Работник не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "data": {
+                                            "description": "Детали ошибки валидации",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin/Workers"
+                ],
+                "summary": "Удалить работника по идентификатору",
+                "operationId": "deleteWorkerAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор работника",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Работник удалён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "deleted"
+                                            ],
+                                            "example": "deleted"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Работник удалён"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют после удаления)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Неавторизован"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Работник не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Работник не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -8532,19 +9538,20 @@
                 },
                 "type": "object"
             },
-            "News": {
+            "Image": {
                 "properties": {
                     "id": {
                         "type": "integer"
                     },
-                    "title": {
-                        "type": "string"
+                    "url": {
+                        "type": "string",
+                        "format": "url"
                     },
-                    "desciprion": {
-                        "type": "string"
-                    },
-                    "category_id": {
+                    "imageable_id": {
                         "type": "integer"
+                    },
+                    "imageable_type": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -8559,6 +9566,29 @@
                     },
                     "desciprion": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "News": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "desciprion": {
+                        "type": "string"
+                    },
+                    "category_id": {
+                        "type": "integer"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Image"
+                        }
                     }
                 },
                 "type": "object"
@@ -8580,6 +9610,20 @@
                 },
                 "type": "object"
             },
+            "ServiceCategory": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "desciprion": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Service": {
                 "properties": {
                     "id": {
@@ -8596,20 +9640,12 @@
                     },
                     "price": {
                         "type": "decimal"
-                    }
-                },
-                "type": "object"
-            },
-            "ServiceCategory": {
-                "properties": {
-                    "id": {
-                        "type": "integer"
                     },
-                    "title": {
-                        "type": "string"
-                    },
-                    "desciprion": {
-                        "type": "string"
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Image"
+                        }
                     }
                 },
                 "type": "object"
@@ -8656,6 +9692,32 @@
                     },
                     "service_id": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Worker": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    },
+                    "age": {
+                        "type": "integer"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Image"
+                        }
                     }
                 },
                 "type": "object"
@@ -8708,6 +9770,10 @@
             "description": "Reviews"
         },
         {
+            "name": "Workers",
+            "description": "Workers"
+        },
+        {
             "name": "Admin/Contacts",
             "description": "Admin/Contacts"
         },
@@ -8742,6 +9808,10 @@
         {
             "name": "Admin/Requests",
             "description": "Admin/Requests"
+        },
+        {
+            "name": "Admin/Workers",
+            "description": "Admin/Workers"
         }
     ]
 }
