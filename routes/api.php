@@ -8,6 +8,7 @@ use App\Http\Controllers\admin\AdminReviewController;
 use App\Http\Controllers\admin\AdminServiceCategoryController;
 use App\Http\Controllers\admin\AdminServiceController;
 use App\Http\Controllers\admin\AdminUserRequestController;
+use App\Http\Controllers\admin\AdminWorkerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\NewsCategoryController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRequestController;
+use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -26,6 +28,7 @@ Route::apiResource('/news-categories', NewsCategoryController::class);
 Route::apiResource('/news', NewsController::class);
 Route::apiResource('/service-categories', ServiceCategoryController::class);
 Route::apiResource('/services', ServiceController::class);
+Route::apiResource('/workers', WorkerController::class);
 
 Route::middleware('auth:api')->prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
@@ -58,6 +61,8 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/reviews', [AdminReviewController::class, 'index']);
     Route::patch('/reviews/{id}/status', [AdminReviewController::class, 'changeReviewStatus']);
+
+    Route::apiResource('/workers', AdminWorkerController::class)->names('admin.workers');
 });
 
 
