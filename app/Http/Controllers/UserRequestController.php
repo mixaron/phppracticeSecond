@@ -239,7 +239,8 @@ class UserRequestController extends Controller
                 'description' => $request->input('description'),
                 'service_id' => $request->input('service_id'),
                 'status' => 'new',
-                'user_id' => auth()->id()
+                'user_id' => auth()->check() ? auth()->id() : null,
+                'phone' => auth()->check() ? auth()->user()->phone : $request->input('phone')
             ]);
         } catch (ModelNotFoundException $e) {
             $status = 'error';

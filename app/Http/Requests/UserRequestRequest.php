@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserRequestRequest extends FormRequest
 {
@@ -24,7 +25,13 @@ class UserRequestRequest extends FormRequest
         return [
             'title' => "required|string|max:255",
             'description' => "required|string",
-            'service_id' => "required|exists:services,id"
+            'service_id' => "required|exists:services,id",
+            'phone' => [
+                Rule::requiredIf(!auth()->check()),
+                'nullable',
+                'string',
+                'size:12'
+            ],
         ];
     }
 }

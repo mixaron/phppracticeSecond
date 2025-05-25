@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Domains\Service\Repositories\ServiceRepository;
 use App\Domains\User\Models\User;
 use App\Domains\User\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,16 +12,20 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 class UserService
 {
     private UserRepository $userRepository;
+    private RequestService $requestService;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, RequestService $requestService)
     {
         $this->userRepository = $userRepository;
+        $this->requestService = $requestService;
     }
 
     public function createUser(array $data): User
     {
         $data['password'] = Hash::make($data['password']);
-        return $this->userRepository->create($data);
+        $user =  $this->userRepository->create($data);
+        $this->requestService->setUserIdByNumber($user);
+        return $user;
     }
 
     public function getUser(): ?User

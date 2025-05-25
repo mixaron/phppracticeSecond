@@ -15,7 +15,8 @@ return new class extends Migration
             $table->string('description');
             $table->enum('status',
                 ['new', 'in_progress', 'completed', 'cancelled', 'rejected'])->default('new');
-            $table->foreignId("user_id")->constrained()->onDelete('cascade');
+            $table->string('phone')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId("service_id")->constrained()->onDelete('cascade');
             $table->timestamps();
         });

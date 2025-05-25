@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Domains\User\Models\User;
+use App\Domains\User\Models\UserRequest;
 use App\Domains\User\Repositories\UserRequestRepository;
 use Illuminate\Support\Collection;
 
@@ -27,5 +29,10 @@ class RequestService
         $this->userRequestRepository->save($request);
 
         return $request;
+    }
+
+    public function setUserIdByNumber(User $user): void
+    {
+        UserRequest::where('phone', $user->phone)->update(['user_id' => $user->id]);
     }
 }
