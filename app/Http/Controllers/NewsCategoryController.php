@@ -57,7 +57,7 @@ class NewsCategoryController extends Controller
      */
     public function index()
     {
-        $newsList = $this->newsCategoryService->getEntityWithCache(null);
+        $newsList = $this->newsCategoryService->getListWithCache(null);
 
         return response()->json([
             'status' => 'success',
