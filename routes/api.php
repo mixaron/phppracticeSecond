@@ -13,7 +13,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\NewsCategoryController;
 use App\Http\Controllers\NewsController;
-use App\Http\Controllers\RequestController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserReviewController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
@@ -31,6 +31,7 @@ Route::apiResource('/news', NewsController::class);
 Route::apiResource('/service-categories', ServiceCategoryController::class);
 Route::apiResource('/services', ServiceController::class);
 Route::apiResource('/workers', WorkerController::class);
+Route::apiResource('/reviews', ReviewController::class);
 
 Route::middleware('auth:api')->prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);

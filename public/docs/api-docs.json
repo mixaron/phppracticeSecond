@@ -754,6 +754,286 @@
                 }
             }
         },
+        "/api/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Получить список всех отзывов или отзывы пользователя",
+                "operationId": "getAllReviews",
+                "responses": {
+                    "200": {
+                        "description": "Список отзывов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Список отзывов"
+                                        },
+                                        "data": {
+                                            "description": "Массив отзывов",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Уникальный идентификатор отзыва",
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "description": "Текст отзыва",
+                                                        "type": "string"
+                                                    },
+                                                    "estimation": {
+                                                        "description": "Оценка (от 0 до 5)",
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "status": {
+                                                        "description": "Статус отзыва",
+                                                        "type": "string",
+                                                        "example": "on_moderation"
+                                                    },
+                                                    "request": {
+                                                        "description": "Информация о заявке",
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "ID заявки",
+                                                                "type": "string"
+                                                            },
+                                                            "user_id": {
+                                                                "description": "Название заявки",
+                                                                "type": "string"
+                                                            },
+                                                            "service_id": {
+                                                                "description": "Название услуги",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Дата и время создания в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reviews/{id}": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Получить отзыв по идентификатору",
+                "operationId": "getReviewById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор отзыва",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Отзыв",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ],
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение о результате запроса",
+                                            "type": "string",
+                                            "example": "Отзыв по id"
+                                        },
+                                        "data": {
+                                            "description": "Данные отзыва",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Уникальный идентификатор отзыва",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "description": "Текст отзыва",
+                                                    "type": "string"
+                                                },
+                                                "estimation": {
+                                                    "description": "Оценка (от 0 до 5)",
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "status": {
+                                                    "description": "Статус отзыва",
+                                                    "type": "string",
+                                                    "example": "on_moderation"
+                                                },
+                                                "request": {
+                                                    "description": "Информация о заявке",
+                                                    "properties": {
+                                                        "id": {
+                                                            "description": "ID заявки",
+                                                            "type": "string"
+                                                        },
+                                                        "user_id": {
+                                                            "description": "Название заявки",
+                                                            "type": "string"
+                                                        },
+                                                        "service_id": {
+                                                            "description": "Название услуги",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата и время создания в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата и время последнего обновления в формате ISO 8601",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Отзыв не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Отзыв не найден"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "description": "Статус запроса",
+                                            "type": "string",
+                                            "enum": [
+                                                "error"
+                                            ],
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "description": "Сообщение об ошибке",
+                                            "type": "string",
+                                            "example": "Произошла непредвиденная ошибка"
+                                        },
+                                        "data": {
+                                            "description": "Данные (отсутствуют при ошибке)",
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/service-categories": {
             "get": {
                 "tags": [
@@ -2896,20 +3176,8 @@
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Получить список всех отзывов или отзывы пользователя",
-                "operationId": "getAllReviews",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "Фильтрация отзывов по ID пользователя (если true, возвращаются отзывы авторизованного пользователя)",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean",
-                            "example": true
-                        }
-                    }
-                ],
+                "summary": "Получить список всех отзывов пользователя",
+                "operationId": "getAllUserReviews",
                 "responses": {
                     "200": {
                         "description": "Список отзывов",
@@ -3225,7 +3493,7 @@
                     "Reviews"
                 ],
                 "summary": "Получить отзыв по идентификатору",
-                "operationId": "getReviewById",
+                "operationId": "getUserReviewById",
                 "parameters": [
                     {
                         "name": "id",
@@ -9687,8 +9955,13 @@
                     "status": {
                         "type": "enum"
                     },
+                    "phone": {
+                        "type": "string",
+                        "nullable": false
+                    },
                     "user_id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true
                     },
                     "service_id": {
                         "type": "integer"
@@ -9750,6 +10023,10 @@
             "description": "News"
         },
         {
+            "name": "Reviews",
+            "description": "Reviews"
+        },
+        {
             "name": "Service-Categories",
             "description": "Service-Categories"
         },
@@ -9764,10 +10041,6 @@
         {
             "name": "Requests",
             "description": "Requests"
-        },
-        {
-            "name": "Reviews",
-            "description": "Reviews"
         },
         {
             "name": "Workers",

@@ -22,15 +22,8 @@ class UserReviewController extends Controller
      * @OA\Get(
      *     path="/api/user/reviews",
      *     tags={"Reviews"},
-     *     summary="Получить список всех отзывов или отзывы пользователя",
-     *     operationId="getAllReviews",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="Фильтрация отзывов по ID пользователя (если true, возвращаются отзывы авторизованного пользователя)",
-     *         required=false,
-     *         @OA\Schema(type="boolean", example=true)
-     *     ),
+     *     summary="Получить список всех отзывов пользователя",
+     *     operationId="getAllUserReviews",
      *     @OA\Response(
      *         response=200,
      *         description="Список отзывов",
@@ -74,15 +67,10 @@ class UserReviewController extends Controller
      *     )
      * )
      */
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->query('user_id') === 'true') {
-            $allReviews = $this->reviewService->getAllReviewByUserId(auth()->id());
-            $message = 'Список отзывов пользователя';
-        } else {
-            $allReviews = $this->reviewService->getListWithCache(null);
-            $message = 'Список отзывов';
-        }
+        $allReviews = $this->reviewService->getAllReviewByUserId(auth()->id());
+        $message = 'Список отзывов пользователя';
 
         return response()->json([
             'status' => 'success',
@@ -96,7 +84,7 @@ class UserReviewController extends Controller
      *     path="/api/user/reviews/{id}",
      *     tags={"Reviews"},
      *     summary="Получить отзыв по идентификатору",
-     *     operationId="getReviewById",
+     *     operationId="getUserReviewById",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
